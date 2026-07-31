@@ -2,7 +2,8 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- VIEWPORT DIKUNCI DI 1200px AGAR TAMPILAN HP = TAMPILAN DESKTOP -->
+    <meta name="viewport" content="width=1200">
     <title>DYLF STOREacc - Digital Premium Ecosystem</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Urbanist:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -11,10 +12,12 @@
 </head>
 <body>
 
+    <!-- PRELOADER INTRO -->
     <div id="preloader">
         <div class="welcome-text" id="welcomeText"></div>
     </div>
 
+    <!-- NAVBAR -->
     <nav id="navbar">
         <a href="#home" class="logo">
             <img src="static/img/produk/watermark_logo.png" alt="DYLF STOREacc" class="watermark-logo" onerror="this.src='https://via.placeholder.com/250x60/020617/8B5CF6?text=DYLF+STOREacc'">
@@ -27,11 +30,13 @@
         </ul>
     </nav>
 
+    <!-- NAVIGASI BAWAH (DIPERTAHANKAN UNTUK AKSES CEPAT) -->
     <div class="bottom-nav">
         <a href="#katalog"><i class="fa-solid fa-images"></i> Katalog</a>
         <a href="#testimoni"><i class="fa-solid fa-star"></i> Testimoni</a>
     </div>
 
+    <!-- MODAL ABOUT STORE -->
     <div id="aboutStoreModal" class="modal-overlay">
         <div class="modal-content glass-card">
             <span class="close-btn" onclick="closeModal('aboutStoreModal')">&times;</span>
@@ -41,7 +46,9 @@
         </div>
     </div>
 
+    <!-- DASHBOARD UTAMA -->
     <main class="dashboard-layout" id="dashboard">
+        <!-- BENTO KIRI (HERO & IKLAN) -->
         <div class="glass-card bento-card hero-bento reveal" id="home">
             <div class="badge-innovate"><i class="fa-solid fa-shield-halved"></i> Aman & Terpercaya 100%</div>
             <h1 class="hero-title">Pusat Akun <br><span class="text-gradient-navy">Gaming Premium</span></h1>
@@ -62,7 +69,9 @@
             </div>
         </div>
 
+        <!-- BENTO KANAN (REKBER & DIFIBOT) -->
         <div class="glass-card bento-card sidebar-bento reveal">
+            <!-- REKBER -->
             <div class="rekber-section">
                 <h3 class="sidebar-title">Lead Rekber & <br><span class="text-gradient-navy">Middleman</span></h3>
                 <p class="sidebar-desc">Bertindak sebagai pihak ketiga netral guna menjamin keamanan dana & data transaksi Anda.</p>
@@ -74,6 +83,7 @@
 
             <hr class="aesthetic-hr">
 
+            <!-- DIFIBOT MASKOT -->
             <div class="difibot-section">
                 <div class="difibot-img-box">
                     <img src="static/img/difibot_assets/difibot_neon.png" alt="Frame 1" class="difibot-frame">
@@ -90,6 +100,7 @@
         </div>
     </main>
 
+    <!-- SECTION KATALOG -->
     <section id="katalog" class="compact-section">
         <div class="section-header reveal">
             <h2 class="section-title">Pusat <span class="text-gradient-navy">Informasi Stok</span></h2>
@@ -118,6 +129,7 @@
         </div>
     </section>
 
+    <!-- SECTION TESTIMONI -->
     <section id="testimoni" class="compact-section">
         <div class="section-header reveal">
             <h2 class="section-title" style="color: var(--putih);">Pusat <span class="text-gradient-navy">Testimoni</span></h2>
@@ -159,6 +171,7 @@
         </div>
     </section>
 
+    <!-- SECTION ULASAN -->
     <section id="ulasan" class="compact-section">
         <div class="section-header reveal">
             <h2 class="section-title">Ulasan <span class="text-gradient-navy">Pelanggan</span></h2>
@@ -201,6 +214,7 @@
         </div>
     </section>
 
+    <!-- SECTION KONTAK -->
     <section id="contact" class="compact-section">
         <div class="section-header reveal">
             <h2 class="section-title">Hubungi <span class="text-gradient-navy">Admin</span></h2>
