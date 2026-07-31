@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
     // ==========================================
-    // 1. PRELOADER ANIMATION (3 DETIK KUNCI)
+    // 1. PRELOADER ANIMATION
     // ==========================================
     const welcomeTextContainer = document.getElementById("welcomeText");
     welcomeTextContainer.innerHTML = ""; 
@@ -54,7 +54,7 @@ document.addEventListener("DOMContentLoaded", () => {
     initScrollReveal();
 });
 
-// LOGIKA AUTO-LOOP TESTIMONI (ASCENDING)
+// LOGIKA AUTO-LOOP TESTIMONI
 function loadTestimonialsAuto(containerId, folderName, maxFiles) {
     const container = document.getElementById(containerId);
     container.innerHTML = "";
@@ -89,24 +89,23 @@ function toggleTesti(containerId, btnId) {
     }
 }
 
-// FIX: LOGIKA SCROLL REVEAL ANIMATION (Mulus & Anti-Hilang)
+// FIX: LOGIKA SCROLL REVEAL (Anti-Hilang, Tampil Mulus)
 function initScrollReveal() {
     const reveals = document.querySelectorAll('.reveal');
     const observer = new IntersectionObserver((entries, obs) => {
         entries.forEach(entry => { 
             if (entry.isIntersecting) { 
                 entry.target.classList.add('active'); 
-                obs.unobserve(entry.target); // KUNCI: Begitu muncul, jangan diobserve lagi agar tak hilang
+                obs.unobserve(entry.target); // Kunci animasi saat sudah muncul agar tak reset
             } 
         });
-    }, { threshold: 0.02, rootMargin: "0px 0px -20px 0px" });
+    }, { 
+        root: null,
+        threshold: 0.1, // Trigger efek saat 10% elemen mulai terlihat di layar
+        rootMargin: "0px 0px -50px 0px"
+    });
     
     reveals.forEach(reveal => { observer.observe(reveal); });
-
-    // Pengaman: Jika HP nyangkut saat di-scroll, otomatis munculkan semua setelah 1,5 detik
-    setTimeout(() => {
-        reveals.forEach(reveal => reveal.classList.add('active'));
-    }, 1500);
 }
 
 // LOGIKA KIRIM ULASAN KE WA ADMIN
