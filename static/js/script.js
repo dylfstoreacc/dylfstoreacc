@@ -1,7 +1,4 @@
 document.addEventListener("DOMContentLoaded", () => {
-    // ==========================================
-    // 1. PRELOADER ANIMATION (3 DETIK KUNCI)
-    // ==========================================
     const welcomeTextContainer = document.getElementById("welcomeText");
     welcomeTextContainer.innerHTML = ""; 
     
@@ -33,9 +30,6 @@ document.addEventListener("DOMContentLoaded", () => {
         setTimeout(() => { preloader.style.visibility = "hidden"; }, 800);
     }, 3000); 
 
-    // ==========================================
-    // 2. CAROUSEL SWIPER 3D
-    // ==========================================
     const swiper = new Swiper('.hero-carousel-container', {
         effect: 'creative', speed: 1200, grabCursor: true, 
         creativeEffect: {
@@ -46,27 +40,23 @@ document.addEventListener("DOMContentLoaded", () => {
         pagination: { el: '.swiper-pagination', clickable: true }, loop: true 
     });
 
-    // ==========================================
-    // 3. INIT TESTIMONI & SCROLL REVEAL
-    // ==========================================
     loadTestimonialsAuto('container-testi-stok', 'stok', 500);
     loadTestimonialsAuto('container-testi-rekber', 'rekber', 500);
     initScrollReveal();
 });
 
-// LOGIKA AUTO-LOOP TESTIMONI
 function loadTestimonialsAuto(containerId, folderName, maxFiles) {
     const container = document.getElementById(containerId);
     container.innerHTML = "";
-    for (let i = maxFiles; i >= 1; i--) {
+    for (let i = 1; i <= maxFiles; i++) {
         const item = document.createElement("div");
         item.className = "testi-item"; 
-        item.innerHTML = `<img src="../static/img/testimoni/${folderName}/${i}.jpg" onerror="this.onerror=null; this.src='../static/img/testimoni/${folderName}/${i}.png'; this.onerror=function(){ this.parentElement.remove(); }">`;
-        container.appendChild(item);
+        // Path sudah diperbaiki menghilangkan "../"
+        item.innerHTML = `<img src="static/img/testimoni/${folderName}/${i}.jpg" onerror="this.onerror=null; this.src='static/img/testimoni/${folderName}/${i}.png'; this.onerror=function(){ this.parentElement.remove(); }">`;
+        container.prepend(item);
     }
 }
 
-// LOGIKA MODAL POP-UP
 function openModal(id) { document.getElementById(id).style.display = 'flex'; }
 function closeModal(id) { document.getElementById(id).style.display = 'none'; }
 window.onclick = function(event) {
@@ -74,7 +64,6 @@ window.onclick = function(event) {
     if (event.target === modal) { modal.style.display = "none"; }
 }
 
-// LOGIKA EXPAND/TUTUP TESTIMONI
 function toggleTesti(containerId, btnId) {
     const container = document.getElementById(containerId);
     const btn = document.getElementById(btnId);
@@ -89,7 +78,6 @@ function toggleTesti(containerId, btnId) {
     }
 }
 
-// LOGIKA SCROLL REVEAL ANIMATION
 function initScrollReveal() {
     const reveals = document.querySelectorAll('.reveal');
     const observer = new IntersectionObserver((entries) => {
@@ -98,7 +86,6 @@ function initScrollReveal() {
     reveals.forEach(reveal => { observer.observe(reveal); });
 }
 
-// LOGIKA KIRIM ULASAN KE WA ADMIN
 function sendReviewToAdmin() {
     const name = document.getElementById("reviewName").value;
     const rating = document.getElementById("reviewRating").value;
