@@ -8,15 +8,39 @@ function googleTranslateElementInit() {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-    // 1. PRELOADER
+    // 1. PRELOADER ANIMASI TEKS KEMBALI
     const welcomeTextContainer = document.getElementById("welcomeText");
     if(welcomeTextContainer) {
-        welcomeTextContainer.innerHTML = "<span class='text-logo-dylf'>DYLF</span> <span style='color: #F8FAFC;'>STOREacc</span>";
+        welcomeTextContainer.innerHTML = ""; 
+        const textToAnimate = "Welcome To DYLF STOREacc"; 
+        const words = textToAnimate.split(" ");
+        let letterDelayCounter = 0;
+        
+        words.forEach((word) => {
+            const wordContainer = document.createElement("span");
+            wordContainer.className = "word-box";
+            
+            if(word === "DYLF") wordContainer.classList.add("text-logo-dylf");
+            if(word === "STOREacc") wordContainer.classList.add("text-logo-store");
+            
+            word.split("").forEach((char) => {
+                const charSpan = document.createElement("span");
+                charSpan.className = "letter-box";
+                charSpan.textContent = char;
+                charSpan.style.animationDelay = `${letterDelayCounter * 0.1}s`;
+                wordContainer.appendChild(charSpan);
+                letterDelayCounter++;
+            });
+            welcomeTextContainer.appendChild(wordContainer);
+        });
+
         setTimeout(() => {
             const preloader = document.getElementById("preloader");
-            preloader.style.opacity = "0";
-            setTimeout(() => { preloader.style.visibility = "hidden"; }, 500);
-        }, 1200); 
+            if(preloader) {
+                preloader.style.opacity = "0";
+                setTimeout(() => { preloader.style.visibility = "hidden"; }, 800);
+            }
+        }, 3000); 
     }
 
     // 2. SWIPER CAROUSEL
@@ -63,7 +87,6 @@ function changeLang(googleCode, langText, btnElement) {
     btns.forEach(btn => btn.classList.remove('active'));
     btnElement.classList.add('active');
     
-    // Trigger Google Translate Combo Box (Gaib)
     let selectField = document.querySelector(".goog-te-combo");
     if (selectField) {
         selectField.value = googleCode;
@@ -72,7 +95,7 @@ function changeLang(googleCode, langText, btnElement) {
     closeModal('langModal');
 }
 
-// FUNGSI TESTIMONI POPUP (Pisahkan Preview 4 Foto dan Full di Modal)
+// FUNGSI TESTIMONI POPUP
 function loadTestimonialPopups(previewId, fullId, folderName, maxFiles) {
     const previewContainer = document.getElementById(previewId);
     const fullContainer = document.getElementById(fullId);
@@ -84,10 +107,10 @@ function loadTestimonialPopups(previewId, fullId, folderName, maxFiles) {
     for (let i = 1; i <= maxFiles; i++) {
         const itemHTML = `<div class="testi-item"><img src="static/img/testimoni/${folderName}/${i}.jpg" loading="lazy" onerror="this.src='https://via.placeholder.com/150/1F2937/06B6D4?text=Testi+${i}';"></div>`;
         
-        // Seluruh foto masuk ke Modal (Pop-up) disusun paling atas (Ascending)
+        // Modal Full: Seluruh foto masuk
         fullContainer.insertAdjacentHTML('afterbegin', itemHTML);
         
-        // HANYA 4 Foto terakhir yang masuk ke layar preview (Beranda)
+        // Home Preview: HANYA 4 Foto terbaru yang masuk
         if(i > maxFiles - 4) {
             previewContainer.insertAdjacentHTML('afterbegin', itemHTML);
         }
