@@ -8,7 +8,7 @@ function googleTranslateElementInit() {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-    // 1. PRELOADER ANIMASI TEKS KEMBALI
+    // 1. PRELOADER ANIMASI TEKS
     const welcomeTextContainer = document.getElementById("welcomeText");
     if(welcomeTextContainer) {
         welcomeTextContainer.innerHTML = ""; 
@@ -49,11 +49,14 @@ document.addEventListener("DOMContentLoaded", () => {
         pagination: { el: '.swiper-pagination', clickable: true }, loop: true 
     });
 
-    // 3. LOAD DATA TESTIMONI (Preview 4 + Modal Full)
-    loadTestimonialPopups('preview-testi-stok', 'full-testi-stok', 'stok', 12); // Max Files sesuaikan (contoh: 12)
-    loadTestimonialPopups('preview-testi-rekber', 'full-testi-rekber', 'rekber', 12);
-    loadTestimonialPopups('preview-testi-topup', 'full-testi-topup', 'topup', 12);
-    loadTestimonialPopups('preview-testi-convert', 'full-testi-convert', 'convert', 12);
+    // 3. LOAD DATA TESTIMONI (Menggunakan jumlah file sesuai repositori Anda)
+    // Parameter: (PreviewID, ModalFullID, FolderName, TotalFile)
+    loadTestimonialPopups('preview-testi-stok', 'full-testi-stok', 'stok', 106); // Stok sudah 106
+    loadTestimonialPopups('preview-testi-rekber', 'full-testi-rekber', 'rekber', 72); // Rekber sudah 72
+    
+    // Topup & Convert diatur ke default 15. Nanti bisa Anda naikkan angkanya jika fotonya sudah banyak
+    loadTestimonialPopups('preview-testi-topup', 'full-testi-topup', 'topup', 15);
+    loadTestimonialPopups('preview-testi-convert', 'full-testi-convert', 'convert', 15);
     
     // 4. JALANKAN ANIMASI SCROLL
     initScrollReveal();
@@ -95,7 +98,7 @@ function changeLang(googleCode, langText, btnElement) {
     closeModal('langModal');
 }
 
-// FUNGSI TESTIMONI POPUP
+// FUNGSI TESTIMONI POPUP (Support Auto Fallback Ekstensi)
 function loadTestimonialPopups(previewId, fullId, folderName, maxFiles) {
     const previewContainer = document.getElementById(previewId);
     const fullContainer = document.getElementById(fullId);
@@ -105,12 +108,13 @@ function loadTestimonialPopups(previewId, fullId, folderName, maxFiles) {
     fullContainer.innerHTML = "";
     
     for (let i = 1; i <= maxFiles; i++) {
-        const itemHTML = `<div class="testi-item"><img src="static/img/testimoni/${folderName}/${i}.jpg" loading="lazy" onerror="this.src='https://via.placeholder.com/150/1F2937/06B6D4?text=Testi+${i}';"></div>`;
+        // Coba baca ekstensi .jpg dulu, kalau tidak ada baru fallback ke .png, kalau tidak ada ganti kotak error
+        const itemHTML = `<div class="testi-item"><img src="static/img/testimoni/${folderName}/${i}.jpg" loading="lazy" onerror="this.onerror=null; this.src='static/img/testimoni/${folderName}/${i}.png'; this.onerror=function(){ this.src='https://via.placeholder.com/150/1F2937/06B6D4?text=Testi+${i}'; };"></div>`;
         
-        // Modal Full: Seluruh foto masuk
+        // Seluruh foto masuk ke Modal (Posisi terbaru / angka terbesar selalu di atas)
         fullContainer.insertAdjacentHTML('afterbegin', itemHTML);
         
-        // Home Preview: HANYA 4 Foto terbaru yang masuk
+        // HANYA 4 Foto terbaru yang masuk ke layar depan web
         if(i > maxFiles - 4) {
             previewContainer.insertAdjacentHTML('afterbegin', itemHTML);
         }
