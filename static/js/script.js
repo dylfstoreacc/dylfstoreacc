@@ -8,7 +8,18 @@ function googleTranslateElementInit() {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-    // 1. PRELOADER ANIMASI TEKS
+    // 1. INIT THEME (Light/Dark Mode)
+    const savedTheme = localStorage.getItem('theme');
+    if(savedTheme === 'light') {
+        document.body.classList.add('light-mode');
+        const themeIcon = document.getElementById('themeIcon');
+        if(themeIcon) {
+            themeIcon.classList.remove('fa-moon');
+            themeIcon.classList.add('fa-sun');
+        }
+    }
+
+    // 2. PRELOADER ANIMASI TEKS
     const welcomeTextContainer = document.getElementById("welcomeText");
     if(welcomeTextContainer) {
         welcomeTextContainer.innerHTML = ""; 
@@ -43,23 +54,22 @@ document.addEventListener("DOMContentLoaded", () => {
         }, 3000); 
     }
 
-    // 2. SWIPER CAROUSEL
+    // 3. SWIPER CAROUSEL
     const swiper = new Swiper('.hero-carousel-container', {
         effect: 'fade', speed: 800, autoplay: { delay: 3000, disableOnInteraction: false },
         pagination: { el: '.swiper-pagination', clickable: true }, loop: true 
     });
 
-    // 3. LOAD DATA TESTIMONI DENGAN SMART SCANNER
-    // Anda TIDAK PERLU lagi mengubah angka maksimal secara manual. Sistem akan melacak sendiri!
+    // 4. LOAD DATA TESTIMONI SMART SCANNER
     loadTestimonialsDynamic('preview-testi-stok', 'full-testi-stok', 'stok');
     loadTestimonialsDynamic('preview-testi-rekber', 'full-testi-rekber', 'rekber');
     loadTestimonialsDynamic('preview-testi-topup', 'full-testi-topup', 'topup');
     loadTestimonialsDynamic('preview-testi-convert', 'full-testi-convert', 'convert');
     
-    // 4. JALANKAN ANIMASI SCROLL
+    // 5. JALANKAN ANIMASI SCROLL
     initScrollReveal();
 
-    // 5. SIDEBAR MENU LOGIC
+    // 6. SIDEBAR MENU LOGIC
     const menuBtn = document.getElementById('mobileMenuBtn');
     const closeBtn = document.getElementById('closeSidebarBtn');
     const sidebar = document.getElementById('sidebarMenu');
@@ -79,46 +89,66 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 });
 
-// FUNGSI GANTI BAHASA AUTO TRANSLATE
-function changeLang(googleCode, langText, btnElement) {
-    document.getElementById('currentFlag').src = `https://flagcdn.com/w20/${googleCode === 'en' ? 'gb' : googleCode}.png`;
-    document.getElementById('currentLang').innerText = langText.toUpperCase();
+// FUNGSI UBAH TEMA (DARK/LIGHT MODE)
+function toggleTheme() {
+    document.body.classList.toggle('light-mode');
+    const themeIcon = document.getElementById('themeIcon');
+    if(document.body.classList.contains('light-mode')) {
+        themeIcon.classList.remove('fa-moon');
+        themeIcon.classList.add('fa-sun');
+        localStorage.setItem('theme', 'light');
+    } else {
+        themeIcon.classList.remove('fa-sun');
+        themeIcon.classList.add('fa-moon');
+        localStorage.setItem('theme', 'dark');
+    }
+}
+
+// FUNGSI GANTI BAHASA AUTO TRANSLATE (Pasti Berfungsi)
+function changeLang(googleCode, langText, btnElement, flagCode) {
+    document.getElementById('currentFlag').src = `https://flagcdn.com/w20/${flagCode}.png`;
+    document.getElementById('currentLang').innerText = langText;
     
     const btns = document.querySelectorAll('.lang-btn');
     btns.forEach(btn => btn.classList.remove('active'));
     btnElement.classList.add('active');
     
-    let selectField = document.querySelector(".goog-te-combo");
-    if (selectField) {
-        selectField.value = googleCode;
-        selectField.dispatchEvent(new Event("change"));
+    // Trigger Google Translate dengan aman
+    function triggerTranslate() {
+        let selectField = document.querySelector(".goog-te-combo");
+        if (selectField) {
+            selectField.value = googleCode;
+            selectField.dispatchEvent(new Event("change"));
+        }
     }
+    
+    triggerTranslate();
+    // Beri jeda 1 detik jika widget Google belum sepenuhnya dimuat (Fallback aman)
+    setTimeout(triggerTranslate, 1000); 
+
     closeModal('langModal');
 }
 
-// SISTEM SMART SCANNER TESTIMONI (Otomatis Deteksi File Baru JPG/PNG)
+// SISTEM SMART SCANNER TESTIMONI (Deteksi File Otomatis)
 async function loadTestimonialsDynamic(previewId, fullId, folderName) {
     const previewContainer = document.getElementById(previewId);
     const fullContainer = document.getElementById(fullId);
     if(!previewContainer || !fullContainer) return;
 
-    // Menampilkan efek loading sementara
-    previewContainer.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 20px;"><i class="fa-solid fa-spinner fa-spin text-cyan" style="font-size: 1.5rem;"></i><p class="text-muted" style="margin-top: 10px; font-size: 0.85rem;">Memuat Data Testimoni...</p></div>`;
+    previewContainer.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 20px;"><i class="fa-solid fa-spinner fa-spin text-cyan" style="font-size: 1.5rem;"></i></div>`;
 
     let validImages = [];
     let emptyCount = 0;
     let i = 1;
 
-    // Sistem akan melacak angka terus menerus sampai menemukan 5 angka yang "kosong" (tidak ada file) berturut-turut
     while(emptyCount < 5 && i <= 600) { 
         let foundSrc = await new Promise((resolve) => {
             let img = new Image();
             img.onload = () => resolve(img.src);
             img.onerror = () => {
-                // Jika JPG tidak ada, lacak otomatis versi PNG (seperti file convert 1.png milik Anda)
                 let imgPng = new Image();
                 imgPng.onload = () => resolve(imgPng.src);
-                imgPng.onerror = () => resolve(null); // Jika keduanya tidak ada, laporkan kosong
+                imgPng.onerror = () => resolve(null); 
                 imgPng.src = `static/img/testimoni/${folderName}/${i}.png`;
             };
             img.src = `static/img/testimoni/${folderName}/${i}.jpg`;
@@ -126,20 +156,17 @@ async function loadTestimonialsDynamic(previewId, fullId, folderName) {
 
         if (foundSrc) {
             validImages.push(foundSrc);
-            emptyCount = 0; // Reset hitungan kosong jika file ditemukan
+            emptyCount = 0; 
         } else {
-            emptyCount++; // Tambah hitungan jika file kosong
+            emptyCount++; 
         }
         i++;
     }
 
-    // Balik urutan: Paksa file dengan angka terbesar (terbaru) berada paling atas!
     validImages.reverse();
-
     previewContainer.innerHTML = "";
     fullContainer.innerHTML = "";
 
-    // Jika folder ternyata benar-benar kosong
     if(validImages.length === 0) {
         const emptyHTML = `<p class="text-muted" style="grid-column: 1/-1; text-align:center; font-size:0.85rem;">Belum ada testimoni.</p>`;
         previewContainer.innerHTML = emptyHTML;
@@ -147,14 +174,9 @@ async function loadTestimonialsDynamic(previewId, fullId, folderName) {
         return;
     }
 
-    // Render file yang berhasil ditemukan
     validImages.forEach((src, index) => {
         const itemHTML = `<div class="testi-item"><img src="${src}" loading="lazy"></div>`;
-        
-        // Semua file masuk ke dalam Pop-up Full
         fullContainer.insertAdjacentHTML('beforeend', itemHTML);
-        
-        // HANYA 4 foto teratas yang dimasukkan ke layar beranda (Preview)
         if (index < 4) {
             previewContainer.insertAdjacentHTML('beforeend', itemHTML);
         }
