@@ -49,14 +49,12 @@ document.addEventListener("DOMContentLoaded", () => {
         pagination: { el: '.swiper-pagination', clickable: true }, loop: true 
     });
 
-    // 3. LOAD DATA TESTIMONI (Menggunakan jumlah file sesuai repositori Anda)
-    // Parameter: (PreviewID, ModalFullID, FolderName, TotalFile)
-    loadTestimonialPopups('preview-testi-stok', 'full-testi-stok', 'stok', 106); // Stok sudah 106
-    loadTestimonialPopups('preview-testi-rekber', 'full-testi-rekber', 'rekber', 72); // Rekber sudah 72
-    
-    // Topup & Convert diatur ke default 15. Nanti bisa Anda naikkan angkanya jika fotonya sudah banyak
-    loadTestimonialPopups('preview-testi-topup', 'full-testi-topup', 'topup', 15);
-    loadTestimonialPopups('preview-testi-convert', 'full-testi-convert', 'convert', 15);
+    // 3. LOAD DATA TESTIMONI DENGAN SMART SCANNER
+    // Anda TIDAK PERLU lagi mengubah angka maksimal secara manual. Sistem akan melacak sendiri!
+    loadTestimonialsDynamic('preview-testi-stok', 'full-testi-stok', 'stok');
+    loadTestimonialsDynamic('preview-testi-rekber', 'full-testi-rekber', 'rekber');
+    loadTestimonialsDynamic('preview-testi-topup', 'full-testi-topup', 'topup');
+    loadTestimonialsDynamic('preview-testi-convert', 'full-testi-convert', 'convert');
     
     // 4. JALANKAN ANIMASI SCROLL
     initScrollReveal();
@@ -98,27 +96,69 @@ function changeLang(googleCode, langText, btnElement) {
     closeModal('langModal');
 }
 
-// FUNGSI TESTIMONI POPUP (Support Auto Fallback Ekstensi)
-function loadTestimonialPopups(previewId, fullId, folderName, maxFiles) {
+// SISTEM SMART SCANNER TESTIMONI (Otomatis Deteksi File Baru JPG/PNG)
+async function loadTestimonialsDynamic(previewId, fullId, folderName) {
     const previewContainer = document.getElementById(previewId);
     const fullContainer = document.getElementById(fullId);
     if(!previewContainer || !fullContainer) return;
-    
+
+    // Menampilkan efek loading sementara
+    previewContainer.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 20px;"><i class="fa-solid fa-spinner fa-spin text-cyan" style="font-size: 1.5rem;"></i><p class="text-muted" style="margin-top: 10px; font-size: 0.85rem;">Memuat Data Testimoni...</p></div>`;
+
+    let validImages = [];
+    let emptyCount = 0;
+    let i = 1;
+
+    // Sistem akan melacak angka terus menerus sampai menemukan 5 angka yang "kosong" (tidak ada file) berturut-turut
+    while(emptyCount < 5 && i <= 600) { 
+        let foundSrc = await new Promise((resolve) => {
+            let img = new Image();
+            img.onload = () => resolve(img.src);
+            img.onerror = () => {
+                // Jika JPG tidak ada, lacak otomatis versi PNG (seperti file convert 1.png milik Anda)
+                let imgPng = new Image();
+                imgPng.onload = () => resolve(imgPng.src);
+                imgPng.onerror = () => resolve(null); // Jika keduanya tidak ada, laporkan kosong
+                imgPng.src = `static/img/testimoni/${folderName}/${i}.png`;
+            };
+            img.src = `static/img/testimoni/${folderName}/${i}.jpg`;
+        });
+
+        if (foundSrc) {
+            validImages.push(foundSrc);
+            emptyCount = 0; // Reset hitungan kosong jika file ditemukan
+        } else {
+            emptyCount++; // Tambah hitungan jika file kosong
+        }
+        i++;
+    }
+
+    // Balik urutan: Paksa file dengan angka terbesar (terbaru) berada paling atas!
+    validImages.reverse();
+
     previewContainer.innerHTML = "";
     fullContainer.innerHTML = "";
-    
-    for (let i = 1; i <= maxFiles; i++) {
-        // Coba baca ekstensi .jpg dulu, kalau tidak ada baru fallback ke .png, kalau tidak ada ganti kotak error
-        const itemHTML = `<div class="testi-item"><img src="static/img/testimoni/${folderName}/${i}.jpg" loading="lazy" onerror="this.onerror=null; this.src='static/img/testimoni/${folderName}/${i}.png'; this.onerror=function(){ this.src='https://via.placeholder.com/150/1F2937/06B6D4?text=Testi+${i}'; };"></div>`;
-        
-        // Seluruh foto masuk ke Modal (Posisi terbaru / angka terbesar selalu di atas)
-        fullContainer.insertAdjacentHTML('afterbegin', itemHTML);
-        
-        // HANYA 4 Foto terbaru yang masuk ke layar depan web
-        if(i > maxFiles - 4) {
-            previewContainer.insertAdjacentHTML('afterbegin', itemHTML);
-        }
+
+    // Jika folder ternyata benar-benar kosong
+    if(validImages.length === 0) {
+        const emptyHTML = `<p class="text-muted" style="grid-column: 1/-1; text-align:center; font-size:0.85rem;">Belum ada testimoni.</p>`;
+        previewContainer.innerHTML = emptyHTML;
+        fullContainer.innerHTML = emptyHTML;
+        return;
     }
+
+    // Render file yang berhasil ditemukan
+    validImages.forEach((src, index) => {
+        const itemHTML = `<div class="testi-item"><img src="${src}" loading="lazy"></div>`;
+        
+        // Semua file masuk ke dalam Pop-up Full
+        fullContainer.insertAdjacentHTML('beforeend', itemHTML);
+        
+        // HANYA 4 foto teratas yang dimasukkan ke layar beranda (Preview)
+        if (index < 4) {
+            previewContainer.insertAdjacentHTML('beforeend', itemHTML);
+        }
+    });
 }
 
 // FUNGSI BUKA TUTUP MODAL
