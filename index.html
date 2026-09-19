@@ -25,11 +25,17 @@
             <img src="static/img/produk/watermark_logo.png" alt="DYLF STOREacc" class="watermark-logo" onerror="this.src='https://via.placeholder.com/200x50/020617/06B6D4?text=DYLF+STORE'">
         </a>
         <div class="nav-right">
+            <!-- Tombol Mode Gelap/Terang -->
+            <div class="theme-toggle" onclick="toggleTheme()" title="Ubah Tema" style="cursor: pointer; margin-right: 5px; font-size: 1.3rem;">
+                <i class="fa-solid fa-moon" id="themeIcon"></i>
+            </div>
+            
             <!-- Fitur Pilih Bahasa Auto Translate -->
             <div class="currency-badge" onclick="openModal('langModal')" style="cursor: pointer;" title="Pilih Bahasa">
                 <img src="https://flagcdn.com/w20/id.png" alt="ID" id="currentFlag"> 
                 <span id="currentLang">ID</span> <i class="fa-solid fa-angle-down" style="font-size: 0.7rem; margin-left: 3px;"></i>
             </div>
+            
             <div class="menu-toggle" id="mobileMenuBtn" style="cursor: pointer;"><i class="fa-solid fa-bars"></i></div>
         </div>
     </nav>
@@ -46,7 +52,7 @@
             <a href="#katalog" class="sidebar-link"><i class="fa-solid fa-layer-group"></i> Layanan Kami</a>
             <a href="#testimoni" class="sidebar-link"><i class="fa-solid fa-star"></i> Testimoni</a>
             <a href="#" class="sidebar-link" onclick="openModal('aboutStoreModal'); return false;"><i class="fa-solid fa-circle-info"></i> About Store</a>
-            <a href="https://wa.me/6285266953530" target="_blank" class="sidebar-link" style="background: rgba(37, 211, 102, 0.2); color: #25D366; border: 1px solid #25D366;"><i class="fa-brands fa-whatsapp"></i> Chat Admin</a>
+            <a href="https://wa.me/6285266953530" target="_blank" class="sidebar-link" style="background: rgba(37, 211, 102, 0.1); color: #25D366; border: 1px solid rgba(37, 211, 102, 0.3);"><i class="fa-brands fa-whatsapp"></i> Chat Admin</a>
         </div>
     </div>
 
@@ -56,9 +62,9 @@
             <span class="close-btn" onclick="closeModal('langModal')">&times;</span>
             <h2 class="section-title" style="font-size: 1.5rem; margin-bottom: 20px;">Pilih <span class="text-cyan">Bahasa</span></h2>
             <div class="lang-options">
-                <button class="lang-btn active" onclick="changeLang('id', 'id', this)"><img src="https://flagcdn.com/w20/id.png"> Indonesia (ID)</button>
-                <button class="lang-btn" onclick="changeLang('gb', 'en', this)"><img src="https://flagcdn.com/w20/gb.png"> English (EN)</button>
-                <button class="lang-btn" onclick="changeLang('my', 'ms', this)"><img src="https://flagcdn.com/w20/my.png"> Melayu (MS)</button>
+                <button class="lang-btn active" onclick="changeLang('id', 'ID', this, 'id')"><img src="https://flagcdn.com/w20/id.png"> Indonesia (ID)</button>
+                <button class="lang-btn" onclick="changeLang('en', 'EN', this, 'sg')"><img src="https://flagcdn.com/w20/sg.png"> English / Singapore (EN)</button>
+                <button class="lang-btn" onclick="changeLang('ms', 'MS', this, 'my')"><img src="https://flagcdn.com/w20/my.png"> Melayu (MS)</button>
             </div>
         </div>
     </div>
@@ -75,9 +81,9 @@
             <h2 class="section-title" style="font-size: 2rem;">About <br><span class="text-gradient-navy">DYLF STOREacc</span></h2>
             <p class="text-muted" style="margin-bottom: 15px;">Pusat Interaksi Jual Beli Akun Digital & Layanan Premium.</p>
             
-            <div style="text-align: left; margin-bottom: 15px; background: rgba(0,0,0,0.3); padding: 15px; border-radius: 10px; border: 1px dashed var(--cyan);">
-                <p style="color: var(--putih); margin-bottom: 5px; font-weight: 600;"><i class="fa-solid fa-list-check text-cyan"></i> Kami Melayani:</p>
-                <ul style="color: var(--abu); font-size: 0.9rem; padding-left: 20px; line-height: 1.6;">
+            <div class="about-list-box">
+                <p style="margin-bottom: 5px; font-weight: 600;"><i class="fa-solid fa-list-check text-cyan"></i> Kami Melayani:</p>
+                <ul>
                     <li>Jual Beli Akun Digital (Game, Sosmed, dll)</li>
                     <li>Jasa Keamanan Transaksi (Rekber / MC)</li>
                     <li>Jasa Topup Item MLBB (Diamond, Charisma)</li>
@@ -131,7 +137,7 @@
                 </div>
                 <div class="swiper-pagination"></div>
             </div>
-            <p class="hero-subtitle">Pusat Interaksi Jual Beli Akun Digital. Melayani Jual Beli, Rekber, Topup Item, hingga Convert Saldo teraman yang dikelola langsung oleh admin Dileppp.</p>
+            <p class="hero-subtitle">Ekosistem Transaksi Jual Beli Akun Digital. Melayani Jual Beli Akun Game/Sosmed, Jasa Rekber/Middleman, Topup Item, hingga Convert Saldo teraman yang dikelola langsung oleh admin Dileppp.</p>
         </div>
 
         <div class="sidebar-wrapper">
@@ -161,13 +167,12 @@
         </div>
     </main>
 
-    <!-- KATALOG LAYANAN DENGAN BANNER WHATSAPP VIP -->
+    <!-- KATALOG LAYANAN -->
     <section id="katalog" class="compact-section reveal">
         <div class="section-header-left" style="margin-bottom: 15px;">
             <h2 class="section-title"><i class="fa-solid fa-layer-group text-cyan"></i> Layanan <span class="text-gradient-navy">DYLF STOREacc</span></h2>
         </div>
 
-        <!-- BANNER KOMUNITAS (DIDESAIN MENARIK UNTUK CLICK-BAIT) -->
         <div class="info-banner" style="background: rgba(15, 23, 42, 0.8); text-align: left; padding: 25px; border-radius: 16px; border: 1px solid rgba(37, 211, 102, 0.3);">
             <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 20px;">
                 <div style="width: 55px; height: 55px; background: rgba(37, 211, 102, 0.15); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #25D366; font-size: 1.8rem; flex-shrink: 0;">
@@ -175,12 +180,12 @@
                 </div>
                 <div>
                     <h4 style="color: var(--putih); font-size: 1.15rem; margin-bottom: 5px;">Gabung Komunitas VIP Kami!</h4>
-                    <p style="color: var(--abu); font-size: 0.9rem; line-height: 1.5;">Dapatkan info stok akun sultan terbaru, promo harga miring, dan pantau ribuan testi real-time setiap harinya.</p>
+                    <p class="text-muted" style="font-size: 0.9rem; line-height: 1.5;">Dapatkan info stok akun sultan terbaru, promo harga miring, dan pantau ribuan testi real-time setiap harinya.</p>
                 </div>
             </div>
             <div class="jb-buttons" style="justify-content: flex-start; gap: 12px;">
                 <a href="https://whatsapp.com/channel/0029VbCmpXQ8vd1RqxIn6h0z" target="_blank" class="btn-outline-navy" style="flex: 1; border-color: #25D366; color: #25D366;"><i class="fa-solid fa-bullhorn"></i> Channel Info Stok & Testi</a>
-                <a href="https://chat.whatsapp.com/IyHj3XJikuX90k6HSiMpDP" target="_blank" class="btn-primary" style="flex: 1; background: #25D366; color: #fff;"><i class="fa-solid fa-users"></i> Grup Jual Beli Terbuka</a>
+                <a href="https://chat.whatsapp.com/IyHj3XJikuX90k6HSiMpDP" target="_blank" class="btn-primary" style="flex: 1; background: #25D366; color: #fff; border: none;"><i class="fa-solid fa-users"></i> Grup Jual Beli Terbuka</a>
             </div>
         </div>
 
@@ -249,7 +254,7 @@
         </div>
     </section>
 
-    <!-- FOOTER SOSMED FULL ICON -->
+    <!-- FOOTER SOSMED (Ikon WA diselaraskan dengan IG dan TikTok) -->
     <footer class="main-footer reveal">
         <div class="footer-grid">
             <div class="footer-col">
@@ -273,8 +278,8 @@
             </div>
             <div class="footer-col">
                 <h4>Komunitas (JB)</h4>
-                <a href="https://whatsapp.com/channel/0029VbCmpXQ8vd1RqxIn6h0z" target="_blank"><i class="fa-brands fa-whatsapp" style="color: #25D366; font-size: 1.1rem; margin-right: 5px;"></i> Channel Info Stok</a>
-                <a href="https://chat.whatsapp.com/IyHj3XJikuX90k6HSiMpDP" target="_blank"><i class="fa-brands fa-whatsapp" style="color: #25D366; font-size: 1.1rem; margin-right: 5px;"></i> Grup Jual Beli Terbuka</a>
+                <a href="https://whatsapp.com/channel/0029VbCmpXQ8vd1RqxIn6h0z" target="_blank"><i class="fa-brands fa-whatsapp"></i> Channel Info Stok</a>
+                <a href="https://chat.whatsapp.com/IyHj3XJikuX90k6HSiMpDP" target="_blank"><i class="fa-brands fa-whatsapp"></i> Grup Jual Beli Terbuka</a>
             </div>
         </div>
         <div class="footer-bottom">
