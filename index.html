@@ -19,7 +19,7 @@
         <div class="welcome-text" id="welcomeText"></div>
     </div>
 
-    <!-- NAVBAR -->
+    <!-- NAVBAR APP STYLE -->
     <nav id="navbar">
         <a href="#home" class="logo">
             <img src="static/img/produk/watermark_logo.png" alt="DYLF STOREacc" class="watermark-logo" onerror="this.src='https://via.placeholder.com/200x50/020617/06B6D4?text=DYLF+STORE'">
@@ -28,12 +28,10 @@
             <div class="theme-toggle" onclick="toggleTheme()" title="Ubah Tema" style="cursor: pointer; margin-right: 5px; font-size: 1.3rem;">
                 <i class="fa-solid fa-moon" id="themeIcon"></i>
             </div>
-            
             <div class="currency-badge" onclick="openModal('langModal')" style="cursor: pointer;" title="Pilih Bahasa">
                 <img src="https://flagcdn.com/w20/id.png" alt="ID" id="currentFlag"> 
                 <span id="currentLang">ID</span> <i class="fa-solid fa-angle-down" style="font-size: 0.7rem; margin-left: 3px;"></i>
             </div>
-            
             <div class="menu-toggle" id="mobileMenuBtn" style="cursor: pointer;"><i class="fa-solid fa-bars"></i></div>
         </div>
     </nav>
@@ -67,17 +65,17 @@
         </div>
     </div>
 
+    <!-- FLOATING WA BUTTON -->
     <a href="https://wa.me/6285266953530" class="floating-wa" target="_blank">
         <i class="fa-brands fa-whatsapp"></i>
     </a>
 
-    <!-- MODAL ABOUT STORE (Direvisi) -->
+    <!-- MODAL ABOUT STORE -->
     <div id="aboutStoreModal" class="modal-overlay">
         <div class="modal-content glass-card">
             <span class="close-btn" onclick="closeModal('aboutStoreModal')">&times;</span>
             <h2 class="section-title" style="font-size: 2rem;">About <br><span class="text-gradient-navy">DYLF STOREacc</span></h2>
             <p class="text-muted" style="margin-bottom: 15px; font-size: 0.95rem; line-height: 1.6;">DYLF STOREacc bukan sekadar platform transaksi, melainkan wadah interaksi terpercaya bagi para gamers dan pengguna digital.</p>
-            
             <div class="about-list-box">
                 <p style="margin-bottom: 5px; font-weight: 600;"><i class="fa-solid fa-list-check text-cyan"></i> Layanan Ekosistem Kami:</p>
                 <ul>
@@ -111,7 +109,7 @@
         </div>
     </div>
 
-    <!-- MODAL INFO REKBER (Edukasi) -->
+    <!-- MODAL INFO REKBER -->
     <div id="modalInfoRekber" class="modal-overlay">
         <div class="modal-content glass-card">
             <span class="close-btn" onclick="closeModal('modalInfoRekber')">&times;</span>
@@ -133,7 +131,7 @@
         </div>
     </div>
 
-    <!-- MODAL INFO CONVERT (Edukasi) -->
+    <!-- MODAL INFO CONVERT -->
     <div id="modalInfoConvert" class="modal-overlay">
         <div class="modal-content glass-card">
             <span class="close-btn" onclick="closeModal('modalInfoConvert')">&times;</span>
@@ -153,7 +151,7 @@
         </div>
     </div>
 
-    <!-- MODAL TESTIMONI (FULL) -->
+    <!-- MODAL TESTIMONI (FULL SCROLL) -->
     <div id="modalTestiStok" class="modal-overlay">
         <div class="modal-content glass-card modal-large">
             <span class="close-btn" onclick="closeModal('modalTestiStok')">&times;</span>
@@ -183,6 +181,7 @@
         </div>
     </div>
 
+    <!-- KONTEN UTAMA -->
     <main class="dashboard-layout" id="dashboard">
         <div class="glass-card hero-bento reveal" id="home">
             <div class="badge-innovate"><i class="fa-solid fa-fire text-cyan"></i> Populer Sekarang!</div>
@@ -226,25 +225,27 @@
         </div>
     </main>
 
-    <!-- KATALOG LAYANAN (DENGAN KLIK INTERAKTIF) -->
+    <!-- KATALOG LAYANAN -->
     <section id="katalog" class="compact-section reveal">
         <div class="section-header-left" style="margin-bottom: 15px;">
             <h2 class="section-title"><i class="fa-solid fa-layer-group text-cyan"></i> Layanan <span class="text-gradient-navy">DYLF STOREacc</span></h2>
         </div>
 
+        <!-- BANNER WA DIRAPIKAN UNTUK LAYAR PC/LAPTOP -->
         <div class="vip-banner-box">
-            <div class="vip-icon"><i class="fa-brands fa-whatsapp"></i></div>
-            <div class="vip-text">
-                <h4>Gabung Komunitas VIP Kami!</h4>
-                <p>Dapatkan info stok akun sultan terbaru, promo harga miring, dan pantau ribuan testi real-time setiap harinya.</p>
+            <div class="vip-content-left">
+                <div class="vip-icon"><i class="fa-brands fa-whatsapp"></i></div>
+                <div class="vip-text">
+                    <h4>Gabung Komunitas VIP Kami!</h4>
+                    <p class="text-muted">Dapatkan info stok akun sultan terbaru, promo harga miring, dan pantau ribuan testi real-time setiap harinya.</p>
+                </div>
             </div>
-            <div class="jb-buttons" style="display: flex; gap: 10px; margin-top: 15px; width: 100%;">
-                <a href="https://whatsapp.com/channel/0029VbCmpXQ8vd1RqxIn6h0z" target="_blank" class="btn-outline-navy" style="flex: 1;"><i class="fa-solid fa-bullhorn"></i> Info Stok & Testi</a>
-                <a href="https://chat.whatsapp.com/IyHj3XJikuX90k6HSiMpDP" target="_blank" class="btn-primary" style="flex: 1;"><i class="fa-solid fa-users"></i> Grup Jual Beli</a>
+            <div class="vip-buttons-right">
+                <a href="https://whatsapp.com/channel/0029VbCmpXQ8vd1RqxIn6h0z" target="_blank" class="btn-outline-navy" style="border-color: #25D366; color: #25D366;"><i class="fa-solid fa-bullhorn"></i> Channel Info Stok</a>
+                <a href="https://chat.whatsapp.com/IyHj3XJikuX90k6HSiMpDP" target="_blank" class="btn-primary" style="background: #25D366; color: #fff; border: none;"><i class="fa-solid fa-users"></i> Grup Jual Beli</a>
             </div>
         </div>
 
-        <!-- MENU BISA DIKLIK MEMBUKA POPUP -->
         <div class="grid-container" id="catalogContainer">
             <div class="product-card service-card" onclick="openModal('modalKatalogStok')" style="cursor: pointer;">
                 <div class="service-icon"><i class="fa-solid fa-cart-shopping"></i></div>
@@ -310,6 +311,7 @@
         </div>
     </section>
 
+    <!-- FOOTER SOSMED -->
     <footer class="main-footer reveal">
         <div class="footer-grid">
             <div class="footer-col">
