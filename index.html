@@ -19,18 +19,16 @@
         <div class="welcome-text" id="welcomeText"></div>
     </div>
 
-    <!-- NAVBAR APP STYLE -->
+    <!-- NAVBAR -->
     <nav id="navbar">
         <a href="#home" class="logo">
             <img src="static/img/produk/watermark_logo.png" alt="DYLF STOREacc" class="watermark-logo" onerror="this.src='https://via.placeholder.com/200x50/020617/06B6D4?text=DYLF+STORE'">
         </a>
         <div class="nav-right">
-            <!-- Tombol Mode Gelap/Terang -->
             <div class="theme-toggle" onclick="toggleTheme()" title="Ubah Tema" style="cursor: pointer; margin-right: 5px; font-size: 1.3rem;">
                 <i class="fa-solid fa-moon" id="themeIcon"></i>
             </div>
             
-            <!-- Fitur Pilih Bahasa Auto Translate -->
             <div class="currency-badge" onclick="openModal('langModal')" style="cursor: pointer;" title="Pilih Bahasa">
                 <img src="https://flagcdn.com/w20/id.png" alt="ID" id="currentFlag"> 
                 <span id="currentLang">ID</span> <i class="fa-solid fa-angle-down" style="font-size: 0.7rem; margin-left: 3px;"></i>
@@ -69,20 +67,19 @@
         </div>
     </div>
 
-    <!-- FLOATING WA BUTTON -->
     <a href="https://wa.me/6285266953530" class="floating-wa" target="_blank">
         <i class="fa-brands fa-whatsapp"></i>
     </a>
 
-    <!-- MODAL ABOUT STORE -->
+    <!-- MODAL ABOUT STORE (Direvisi) -->
     <div id="aboutStoreModal" class="modal-overlay">
         <div class="modal-content glass-card">
             <span class="close-btn" onclick="closeModal('aboutStoreModal')">&times;</span>
             <h2 class="section-title" style="font-size: 2rem;">About <br><span class="text-gradient-navy">DYLF STOREacc</span></h2>
-            <p class="text-muted" style="margin-bottom: 15px;">Pusat Interaksi Jual Beli Akun Digital & Layanan Premium.</p>
+            <p class="text-muted" style="margin-bottom: 15px; font-size: 0.95rem; line-height: 1.6;">DYLF STOREacc bukan sekadar platform transaksi, melainkan wadah interaksi terpercaya bagi para gamers dan pengguna digital.</p>
             
             <div class="about-list-box">
-                <p style="margin-bottom: 5px; font-weight: 600;"><i class="fa-solid fa-list-check text-cyan"></i> Kami Melayani:</p>
+                <p style="margin-bottom: 5px; font-weight: 600;"><i class="fa-solid fa-list-check text-cyan"></i> Layanan Ekosistem Kami:</p>
                 <ul>
                     <li>Jual Beli Akun Digital (Game, Sosmed, dll)</li>
                     <li>Jasa Keamanan Transaksi (Rekber / MC)</li>
@@ -90,11 +87,73 @@
                     <li>Jasa Convert Saldo (E-Wallet, Pulsa, Valas)</li>
                 </ul>
             </div>
-            <p class="text-muted" style="font-size: 0.85rem;">Diintegrasikan dengan teknologi modern untuk memastikan transaksi Anda berjalan mulus tanpa celah keamanan.</p>
+            <p class="text-muted" style="font-size: 0.85rem; line-height: 1.5;">Kami memastikan setiap proses jual-beli berjalan transparan, cepat, dan 100% aman di bawah pengawasan langsung dari admin Dileppp.</p>
         </div>
     </div>
 
-    <!-- MODAL TESTIMONI POP-UP FULL SCROLL -->
+    <!-- MODAL KATALOG STOK AKUN -->
+    <div id="modalKatalogStok" class="modal-overlay">
+        <div class="modal-content glass-card modal-large">
+            <span class="close-btn" onclick="closeModal('modalKatalogStok')">&times;</span>
+            <h3 class="box-title" style="justify-content: center; margin-bottom: 5px;"><i class="fa-solid fa-cart-shopping text-cyan"></i> Katalog Stok Akun</h3>
+            <p class="text-muted" style="font-size: 0.85rem; text-align: center; margin-bottom: 20px;">Pilih akun incaranmu dan langsung tanyakan ketersediaannya ke Admin!</p>
+            <div class="katalog-modal-grid" id="katalog-stok-grid"></div>
+        </div>
+    </div>
+
+    <!-- MODAL KATALOG TOPUP -->
+    <div id="modalKatalogTopup" class="modal-overlay">
+        <div class="modal-content glass-card modal-large">
+            <span class="close-btn" onclick="closeModal('modalKatalogTopup')">&times;</span>
+            <h3 class="box-title" style="justify-content: center; margin-bottom: 5px;"><i class="fa-solid fa-gem text-cyan"></i> Katalog Topup Item</h3>
+            <p class="text-muted" style="font-size: 0.85rem; text-align: center; margin-bottom: 20px;">Pilih item / pricelist topup yang tersedia hari ini.</p>
+            <div class="katalog-modal-grid" id="katalog-topup-grid"></div>
+        </div>
+    </div>
+
+    <!-- MODAL INFO REKBER (Edukasi) -->
+    <div id="modalInfoRekber" class="modal-overlay">
+        <div class="modal-content glass-card">
+            <span class="close-btn" onclick="closeModal('modalInfoRekber')">&times;</span>
+            <h3 class="box-title" style="justify-content: center; margin-bottom: 20px; font-size: 1.5rem;"><i class="fa-solid fa-shield-halved text-purple"></i> Jasa Rekber & MC</h3>
+            <div style="text-align: left; color: var(--putih); font-size: 0.95rem; line-height: 1.6;">
+                <p style="margin-bottom: 15px;"><strong>Apa itu Rekber / Middleman?</strong><br>Layanan pihak ketiga yang bertugas mengamankan dana dan data selama proses transaksi jual beli akun dari potensi penipuan (*scammer*).</p>
+                <div style="margin-bottom: 15px; padding: 15px; background: rgba(139, 92, 246, 0.1); border-left: 4px solid var(--ungu-neon); border-radius: 8px;">
+                    <strong style="color: var(--ungu-neon);">Analogi Cara Kerja:</strong><br>
+                    <ol style="margin-left: 20px; margin-top: 5px; color: var(--abu);">
+                        <li><strong>Pembeli</strong> mentransfer dana ke rekening <strong>Admin DYLF</strong>.</li>
+                        <li><strong>Penjual</strong> menyerahkan data akun kepada <strong>Pembeli</strong>.</li>
+                        <li><strong>Pembeli</strong> mengecek kesesuaian dan mengamankan akun tersebut.</li>
+                        <li>Jika akun sudah 100% aman, <strong>Admin</strong> baru akan meneruskan dana ke <strong>Penjual</strong>. Selesai!</li>
+                    </ol>
+                </div>
+                <p class="text-muted" style="font-size: 0.85rem; text-align: center;">Jika transaksi batal/bermasalah, dana 100% aman dan dikembalikan utuh ke Pembeli.</p>
+            </div>
+            <a href="https://wa.me/6285266953530?text=Halo%20Admin%20Dileppp,%20saya%20ingin%20menggunakan%20jasa%20Rekber%20/%20Middleman." target="_blank" class="btn-gradient-navy" style="width: 100%; margin-top: 20px;"><i class="fa-brands fa-whatsapp"></i> Gunakan Jasa Rekber Sekarang</a>
+        </div>
+    </div>
+
+    <!-- MODAL INFO CONVERT (Edukasi) -->
+    <div id="modalInfoConvert" class="modal-overlay">
+        <div class="modal-content glass-card">
+            <span class="close-btn" onclick="closeModal('modalInfoConvert')">&times;</span>
+            <h3 class="box-title" style="justify-content: center; margin-bottom: 20px; font-size: 1.5rem;"><i class="fa-solid fa-wallet text-cyan"></i> Jasa Convert Saldo</h3>
+            <div style="text-align: left; color: var(--putih); font-size: 0.95rem; line-height: 1.6;">
+                <p style="margin-bottom: 15px;">Punya saldo mengendap di suatu platform namun butuh uang tunai atau pindah ke platform lain? Kami solusinya!</p>
+                <ul style="margin-bottom: 15px; padding-left: 20px; color: var(--abu);">
+                    <li>Convert Saldo Pulsa ke DANA / OVO / GoPay / Bank</li>
+                    <li>Tukar Saldo antar E-Wallet</li>
+                    <li>Pencairan Saldo Valas / PayPal ke Rupiah</li>
+                </ul>
+                <p style="padding: 12px; background: rgba(6, 182, 212, 0.1); border: 1px dashed var(--cyan); border-radius: 8px; text-align: center; font-weight: 600; color: var(--cyan);">
+                    Rate sangat bersahabat, proses hitungan menit, dan dijamin 100% tepercaya!
+                </p>
+            </div>
+            <a href="https://wa.me/6285266953530?text=Halo%20Admin%20Dileppp,%20saya%20ingin%20menggunakan%20jasa%20Convert%20Saldo." target="_blank" class="btn-primary" style="width: 100%; margin-top: 20px;"><i class="fa-brands fa-whatsapp"></i> Hubungi Admin Convert</a>
+        </div>
+    </div>
+
+    <!-- MODAL TESTIMONI (FULL) -->
     <div id="modalTestiStok" class="modal-overlay">
         <div class="modal-content glass-card modal-large">
             <span class="close-btn" onclick="closeModal('modalTestiStok')">&times;</span>
@@ -167,55 +226,52 @@
         </div>
     </main>
 
-    <!-- KATALOG LAYANAN -->
+    <!-- KATALOG LAYANAN (DENGAN KLIK INTERAKTIF) -->
     <section id="katalog" class="compact-section reveal">
         <div class="section-header-left" style="margin-bottom: 15px;">
             <h2 class="section-title"><i class="fa-solid fa-layer-group text-cyan"></i> Layanan <span class="text-gradient-navy">DYLF STOREacc</span></h2>
         </div>
 
-        <div class="info-banner" style="background: rgba(15, 23, 42, 0.8); text-align: left; padding: 25px; border-radius: 16px; border: 1px solid rgba(37, 211, 102, 0.3);">
-            <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 20px;">
-                <div style="width: 55px; height: 55px; background: rgba(37, 211, 102, 0.15); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #25D366; font-size: 1.8rem; flex-shrink: 0;">
-                    <i class="fa-brands fa-whatsapp"></i>
-                </div>
-                <div>
-                    <h4 style="color: var(--putih); font-size: 1.15rem; margin-bottom: 5px;">Gabung Komunitas VIP Kami!</h4>
-                    <p class="text-muted" style="font-size: 0.9rem; line-height: 1.5;">Dapatkan info stok akun sultan terbaru, promo harga miring, dan pantau ribuan testi real-time setiap harinya.</p>
-                </div>
+        <div class="vip-banner-box">
+            <div class="vip-icon"><i class="fa-brands fa-whatsapp"></i></div>
+            <div class="vip-text">
+                <h4>Gabung Komunitas VIP Kami!</h4>
+                <p>Dapatkan info stok akun sultan terbaru, promo harga miring, dan pantau ribuan testi real-time setiap harinya.</p>
             </div>
-            <div class="jb-buttons" style="justify-content: flex-start; gap: 12px;">
-                <a href="https://whatsapp.com/channel/0029VbCmpXQ8vd1RqxIn6h0z" target="_blank" class="btn-outline-navy" style="flex: 1; border-color: #25D366; color: #25D366;"><i class="fa-solid fa-bullhorn"></i> Channel Info Stok & Testi</a>
-                <a href="https://chat.whatsapp.com/IyHj3XJikuX90k6HSiMpDP" target="_blank" class="btn-primary" style="flex: 1; background: #25D366; color: #fff; border: none;"><i class="fa-solid fa-users"></i> Grup Jual Beli Terbuka</a>
+            <div class="jb-buttons" style="display: flex; gap: 10px; margin-top: 15px; width: 100%;">
+                <a href="https://whatsapp.com/channel/0029VbCmpXQ8vd1RqxIn6h0z" target="_blank" class="btn-outline-navy" style="flex: 1;"><i class="fa-solid fa-bullhorn"></i> Info Stok & Testi</a>
+                <a href="https://chat.whatsapp.com/IyHj3XJikuX90k6HSiMpDP" target="_blank" class="btn-primary" style="flex: 1;"><i class="fa-solid fa-users"></i> Grup Jual Beli</a>
             </div>
         </div>
 
+        <!-- MENU BISA DIKLIK MEMBUKA POPUP -->
         <div class="grid-container" id="catalogContainer">
-            <div class="product-card service-card">
+            <div class="product-card service-card" onclick="openModal('modalKatalogStok')" style="cursor: pointer;">
                 <div class="service-icon"><i class="fa-solid fa-cart-shopping"></i></div>
                 <div class="card-body">
                     <h4>Jual Beli Akun Digital</h4>
-                    <p>Game, Sosmed, DLL</p>
+                    <p>Cek Stok Akun & Game</p>
                 </div>
             </div>
-            <div class="product-card service-card">
+            <div class="product-card service-card" onclick="openModal('modalInfoRekber')" style="cursor: pointer;">
                 <div class="service-icon" style="color: var(--ungu-neon); background: rgba(139, 92, 246, 0.1);"><i class="fa-solid fa-shield-halved"></i></div>
                 <div class="card-body">
                     <h4>Jasa Rekber & MC</h4>
-                    <p>Keamanan Transaksi</p>
+                    <p>Info Keamanan Transaksi</p>
                 </div>
             </div>
-            <div class="product-card service-card">
+            <div class="product-card service-card" onclick="openModal('modalKatalogTopup')" style="cursor: pointer;">
                 <div class="service-icon"><i class="fa-solid fa-gem"></i></div>
                 <div class="card-body">
                     <h4>Jasa Topup Item</h4>
-                    <p>Diamond & Charisma MLBB</p>
+                    <p>Cek Pricelist & Stok</p>
                 </div>
             </div>
-            <div class="product-card service-card">
+            <div class="product-card service-card" onclick="openModal('modalInfoConvert')" style="cursor: pointer;">
                 <div class="service-icon" style="color: var(--ungu-neon); background: rgba(139, 92, 246, 0.1);"><i class="fa-solid fa-wallet"></i></div>
                 <div class="card-body">
                     <h4>Jasa Convert Saldo</h4>
-                    <p>E-Wallet, Pulsa, Valas</p>
+                    <p>Tukar Pulsa, E-Wallet, Valas</p>
                 </div>
             </div>
         </div>
@@ -254,7 +310,6 @@
         </div>
     </section>
 
-    <!-- FOOTER SOSMED (Ikon WA diselaraskan dengan IG dan TikTok) -->
     <footer class="main-footer reveal">
         <div class="footer-grid">
             <div class="footer-col">
