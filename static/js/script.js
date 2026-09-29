@@ -1,4 +1,4 @@
-// INISIALISASI GOOGLE TRANSLATE (Tersembunyi)
+// INISIALISASI GOOGLE TRANSLATE
 function googleTranslateElementInit() {
     new google.translate.TranslateElement({
         pageLanguage: 'id',
@@ -19,7 +19,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    // 2. PRELOADER ANIMASI TEKS
+    // 2. PRELOADER ANIMASI TEKS (Warna DYLF Navy Gradient)
     const welcomeTextContainer = document.getElementById("welcomeText");
     if(welcomeTextContainer) {
         welcomeTextContainer.innerHTML = ""; 
@@ -65,11 +65,15 @@ document.addEventListener("DOMContentLoaded", () => {
     loadTestimonialsDynamic('preview-testi-rekber', 'full-testi-rekber', 'rekber');
     loadTestimonialsDynamic('preview-testi-topup', 'full-testi-topup', 'topup');
     loadTestimonialsDynamic('preview-testi-convert', 'full-testi-convert', 'convert');
+
+    // 5. LOAD KATALOG CERDAS & TOMBOL BELI WA OTOMATIS
+    loadCatalogDynamic('katalog-stok-grid', 'stok', 'Stok Akun');
+    loadCatalogDynamic('katalog-topup-grid', 'topup', 'Topup Item');
     
-    // 5. JALANKAN ANIMASI SCROLL
+    // 6. JALANKAN ANIMASI SCROLL
     initScrollReveal();
 
-    // 6. SIDEBAR MENU LOGIC
+    // 7. SIDEBAR MENU LOGIC
     const menuBtn = document.getElementById('mobileMenuBtn');
     const closeBtn = document.getElementById('closeSidebarBtn');
     const sidebar = document.getElementById('sidebarMenu');
@@ -113,7 +117,7 @@ function changeLang(googleCode, langText, btnElement, flagCode) {
     btns.forEach(btn => btn.classList.remove('active'));
     btnElement.classList.add('active');
     
-    // Trigger Google Translate dengan aman
+    // Trigger Google Translate dengan paksaan cerdas
     function triggerTranslate() {
         let selectField = document.querySelector(".goog-te-combo");
         if (selectField) {
@@ -123,19 +127,16 @@ function changeLang(googleCode, langText, btnElement, flagCode) {
     }
     
     triggerTranslate();
-    // Beri jeda 1 detik jika widget Google belum sepenuhnya dimuat (Fallback aman)
-    setTimeout(triggerTranslate, 1000); 
+    setTimeout(triggerTranslate, 500); // Antisipasi jeda loading widget
 
     closeModal('langModal');
 }
 
-// SISTEM SMART SCANNER TESTIMONI (Deteksi File Otomatis)
+// SISTEM SMART SCANNER TESTIMONI
 async function loadTestimonialsDynamic(previewId, fullId, folderName) {
     const previewContainer = document.getElementById(previewId);
     const fullContainer = document.getElementById(fullId);
     if(!previewContainer || !fullContainer) return;
-
-    previewContainer.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 20px;"><i class="fa-solid fa-spinner fa-spin text-cyan" style="font-size: 1.5rem;"></i></div>`;
 
     let validImages = [];
     let emptyCount = 0;
@@ -154,12 +155,8 @@ async function loadTestimonialsDynamic(previewId, fullId, folderName) {
             img.src = `static/img/testimoni/${folderName}/${i}.jpg`;
         });
 
-        if (foundSrc) {
-            validImages.push(foundSrc);
-            emptyCount = 0; 
-        } else {
-            emptyCount++; 
-        }
+        if (foundSrc) { validImages.push(foundSrc); emptyCount = 0; } 
+        else { emptyCount++; }
         i++;
     }
 
@@ -177,9 +174,65 @@ async function loadTestimonialsDynamic(previewId, fullId, folderName) {
     validImages.forEach((src, index) => {
         const itemHTML = `<div class="testi-item"><img src="${src}" loading="lazy"></div>`;
         fullContainer.insertAdjacentHTML('beforeend', itemHTML);
-        if (index < 4) {
-            previewContainer.insertAdjacentHTML('beforeend', itemHTML);
-        }
+        if (index < 4) { previewContainer.insertAdjacentHTML('beforeend', itemHTML); }
+    });
+}
+
+// SISTEM SMART SCANNER KATALOG (Fitur Canggih Penghubung WA Seller)
+async function loadCatalogDynamic(containerId, folderName, waType) {
+    const container = document.getElementById(containerId);
+    if(!container) return;
+
+    container.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 20px;"><i class="fa-solid fa-spinner fa-spin text-cyan" style="font-size: 1.5rem;"></i><p class="text-muted" style="margin-top:10px;">Mengecek ketersediaan stok...</p></div>`;
+
+    let validImages = [];
+    let emptyCount = 0;
+    let i = 1;
+
+    // Lacak isi folder static/img/katalog/(stok atau topup)
+    while(emptyCount < 5 && i <= 300) { 
+        let foundSrc = await new Promise((resolve) => {
+            let img = new Image();
+            img.onload = () => resolve({src: img.src, id: i});
+            img.onerror = () => {
+                let imgPng = new Image();
+                imgPng.onload = () => resolve({src: imgPng.src, id: i});
+                imgPng.onerror = () => resolve(null); 
+                imgPng.src = `static/img/katalog/${folderName}/${i}.png`;
+            };
+            img.src = `static/img/katalog/${folderName}/${i}.jpg`;
+        });
+
+        if (foundSrc) { validImages.push(foundSrc); emptyCount = 0; } 
+        else { emptyCount++; }
+        i++;
+    }
+
+    validImages.reverse(); // Terbaru di atas
+    container.innerHTML = "";
+
+    // Jika tidak ada stok gambar di folder, beri peringatan mewah
+    if(validImages.length === 0) {
+        container.innerHTML = `<div style="grid-column: 1/-1; text-align:center; padding: 30px 10px; background: rgba(0,0,0,0.2); border-radius: 12px; border: 1px dashed rgba(255,255,255,0.1);"><i class="fa-solid fa-box-open text-muted" style="font-size: 3rem; margin-bottom: 15px;"></i><h4 style="color: var(--putih); margin-bottom: 5px;">Stok Belum Tersedia</h4><p class="text-muted" style="font-size:0.9rem;">Saat ini belum ada ${waType} yang dipublikasikan. Silakan hubungi admin untuk info lebih lanjut.</p></div>`;
+        return;
+    }
+
+    // Jika ada stok gambar, render kartu belanja
+    validImages.forEach((item) => {
+        // Teks otomatis WhatsApp pintar!
+        const message = encodeURIComponent(`Halo Admin Dileppp, saya tertarik dengan [${waType}] yang ada di Katalog Web (Gambar No. ${item.id}). Apakah masih tersedia?`);
+        const waLink = `https://wa.me/6285266953530?text=${message}`;
+
+        const itemHTML = `
+        <div class="katalog-item-card">
+            <div class="katalog-img-box">
+                <img src="${item.src}" loading="lazy">
+            </div>
+            <div class="katalog-action">
+                <a href="${waLink}" target="_blank" class="btn-primary" style="width: 100%; padding: 10px; font-size: 0.85rem;"><i class="fa-brands fa-whatsapp"></i> Tanyakan Admin</a>
+            </div>
+        </div>`;
+        container.insertAdjacentHTML('beforeend', itemHTML);
     });
 }
 
@@ -190,9 +243,7 @@ function closeModal(id) { document.getElementById(id).style.display = 'none'; }
 window.onclick = function(event) {
     const modals = document.querySelectorAll('.modal-overlay');
     modals.forEach(modal => {
-        if (event.target === modal) {
-            modal.style.display = "none";
-        }
+        if (event.target === modal) { modal.style.display = "none"; }
     });
 }
 
