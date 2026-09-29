@@ -1,4 +1,4 @@
-// INISIALISASI GOOGLE TRANSLATE
+// INISIALISASI GOOGLE TRANSLATE (Tersembunyi)
 function googleTranslateElementInit() {
     new google.translate.TranslateElement({
         pageLanguage: 'id',
@@ -60,15 +60,16 @@ document.addEventListener("DOMContentLoaded", () => {
         pagination: { el: '.swiper-pagination', clickable: true }, loop: true 
     });
 
-    // 4. LOAD DATA TESTIMONI SMART SCANNER
-    loadTestimonialsDynamic('preview-testi-stok', 'full-testi-stok', 'stok');
-    loadTestimonialsDynamic('preview-testi-rekber', 'full-testi-rekber', 'rekber');
-    loadTestimonialsDynamic('preview-testi-topup', 'full-testi-topup', 'topup');
-    loadTestimonialsDynamic('preview-testi-convert', 'full-testi-convert', 'convert');
+    // 4. LOAD DATA TESTIMONI (PARALLEL SCANNING BLAZING FAST)
+    // Parameter angka terakhir (contoh: 150) adalah batas maksimal angka deteksi file
+    loadTestimonialsFast('preview-testi-stok', 'full-testi-stok', 'stok', 150);
+    loadTestimonialsFast('preview-testi-rekber', 'full-testi-rekber', 'rekber', 100);
+    loadTestimonialsFast('preview-testi-topup', 'full-testi-topup', 'topup', 50);
+    loadTestimonialsFast('preview-testi-convert', 'full-testi-convert', 'convert', 50);
 
     // 5. LOAD KATALOG CERDAS
-    loadCatalogDynamic('katalog-stok-grid', 'stok', 'Stok Akun');
-    loadCatalogDynamic('katalog-topup-grid', 'topup', 'Topup Item');
+    loadCatalogFast('katalog-stok-grid', 'stok', 'Stok Akun', 100);
+    loadCatalogFast('katalog-topup-grid', 'topup', 'Topup Item', 50);
     
     // 6. JALANKAN ANIMASI SCROLL
     initScrollReveal();
@@ -108,7 +109,7 @@ function toggleTheme() {
     }
 }
 
-// FUNGSI GANTI BAHASA AUTO TRANSLATE (Pasti Berfungsi)
+// FUNGSI GANTI BAHASA AUTO TRANSLATE
 function changeLang(googleCode, langText, btnElement, flagCode) {
     document.getElementById('currentFlag').src = `https://flagcdn.com/w20/${flagCode}.png`;
     document.getElementById('currentLang').innerText = langText;
@@ -117,7 +118,6 @@ function changeLang(googleCode, langText, btnElement, flagCode) {
     btns.forEach(btn => btn.classList.remove('active'));
     btnElement.classList.add('active');
     
-    // Trigger Google Translate dengan paksaan cerdas
     function triggerTranslate() {
         let selectField = document.querySelector(".goog-te-combo");
         if (selectField) {
@@ -125,52 +125,42 @@ function changeLang(googleCode, langText, btnElement, flagCode) {
             selectField.dispatchEvent(new Event("change"));
         }
     }
-    
     triggerTranslate();
     setTimeout(triggerTranslate, 500); 
 
     closeModal('langModal');
 }
 
-// SISTEM SMART SCANNER TESTIMONI (Dengan Pemaksaan Jeda Render Loading Spinner)
-async function loadTestimonialsDynamic(previewId, fullId, folderName) {
+// SISTEM SMART SCANNER TESTIMONI (PARALLEL - BEBAS LAG)
+async function loadTestimonialsFast(previewId, fullId, folderName, maxCheck) {
     const previewContainer = document.getElementById(previewId);
     const fullContainer = document.getElementById(fullId);
     if(!previewContainer || !fullContainer) return;
 
-    // Menampilkan efek loading yang besar di tengah kotak
-    previewContainer.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 40px 20px;"><i class="fa-solid fa-spinner fa-spin text-cyan" style="font-size: 2.5rem;"></i><p class="text-muted" style="margin-top: 15px; font-size: 0.95rem; font-weight: 600;">Memuat Data Testimoni...</p></div>`;
+    previewContainer.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 20px;"><i class="fa-solid fa-spinner fa-spin text-cyan" style="font-size: 2rem;"></i><p class="text-muted" style="margin-top: 10px; font-size: 0.85rem;">Memuat Data...</p></div>`;
 
-    // PAKSA BROWSER MENGGAMBAR SPINNER SEBELUM MENCARI DATA (Jeda 0.1 Detik)
-    await new Promise(resolve => setTimeout(resolve, 100));
-
-    let validImages = [];
-    let emptyCount = 0;
-    let i = 1;
-
-    while(emptyCount < 5 && i <= 600) { 
-        let foundSrc = await new Promise((resolve) => {
+    let promises = [];
+    for (let i = 1; i <= maxCheck; i++) {
+        promises.push(new Promise((resolve) => {
             let img = new Image();
-            img.onload = () => resolve(img.src);
+            img.onload = () => resolve({ id: i, src: img.src });
             img.onerror = () => {
                 let imgPng = new Image();
-                imgPng.onload = () => resolve(imgPng.src);
-                imgPng.onerror = () => resolve(null); 
+                imgPng.onload = () => resolve({ id: i, src: imgPng.src });
+                imgPng.onerror = () => resolve(null);
                 imgPng.src = `static/img/testimoni/${folderName}/${i}.png`;
             };
             img.src = `static/img/testimoni/${folderName}/${i}.jpg`;
-        });
-
-        if (foundSrc) { validImages.push(foundSrc); emptyCount = 0; } 
-        else { emptyCount++; }
-        i++;
+        }));
     }
 
-    validImages.reverse();
+    let results = await Promise.all(promises);
+    let validImages = results.filter(res => res !== null).sort((a, b) => b.id - a.id).map(res => res.src);
+
     previewContainer.innerHTML = "";
     fullContainer.innerHTML = "";
 
-    if(validImages.length === 0) {
+    if (validImages.length === 0) {
         const emptyHTML = `<p class="text-muted" style="grid-column: 1/-1; text-align:center; font-size:0.85rem;">Belum ada testimoni.</p>`;
         previewContainer.innerHTML = emptyHTML;
         fullContainer.innerHTML = emptyHTML;
@@ -180,45 +170,40 @@ async function loadTestimonialsDynamic(previewId, fullId, folderName) {
     validImages.forEach((src, index) => {
         const itemHTML = `<div class="testi-item"><img src="${src}" loading="lazy"></div>`;
         fullContainer.insertAdjacentHTML('beforeend', itemHTML);
-        if (index < 4) { previewContainer.insertAdjacentHTML('beforeend', itemHTML); }
+        if (index < 4) {
+            previewContainer.insertAdjacentHTML('beforeend', itemHTML);
+        }
     });
 }
 
-// SISTEM SMART SCANNER KATALOG (Dengan Jeda Loading yang Sama)
-async function loadCatalogDynamic(containerId, folderName, waType) {
+// SISTEM SMART SCANNER KATALOG (PARALLEL - BEBAS LAG)
+async function loadCatalogFast(containerId, folderName, waType, maxCheck) {
     const container = document.getElementById(containerId);
     if(!container) return;
 
-    container.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 40px 20px;"><i class="fa-solid fa-spinner fa-spin text-cyan" style="font-size: 2.5rem;"></i><p class="text-muted" style="margin-top: 15px; font-size: 0.95rem; font-weight: 600;">Mengecek Stok ${waType}...</p></div>`;
+    container.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 30px;"><i class="fa-solid fa-spinner fa-spin text-cyan" style="font-size: 2rem;"></i><p class="text-muted" style="margin-top: 10px; font-size: 0.85rem;">Mengecek Stok ${waType}...</p></div>`;
 
-    await new Promise(resolve => setTimeout(resolve, 100));
-
-    let validImages = [];
-    let emptyCount = 0;
-    let i = 1;
-
-    while(emptyCount < 5 && i <= 300) { 
-        let foundSrc = await new Promise((resolve) => {
+    let promises = [];
+    for (let i = 1; i <= maxCheck; i++) {
+        promises.push(new Promise((resolve) => {
             let img = new Image();
-            img.onload = () => resolve({src: img.src, id: i});
+            img.onload = () => resolve({ id: i, src: img.src });
             img.onerror = () => {
                 let imgPng = new Image();
-                imgPng.onload = () => resolve({src: imgPng.src, id: i});
-                imgPng.onerror = () => resolve(null); 
+                imgPng.onload = () => resolve({ id: i, src: imgPng.src });
+                imgPng.onerror = () => resolve(null);
                 imgPng.src = `static/img/katalog/${folderName}/${i}.png`;
             };
             img.src = `static/img/katalog/${folderName}/${i}.jpg`;
-        });
-
-        if (foundSrc) { validImages.push(foundSrc); emptyCount = 0; } 
-        else { emptyCount++; }
-        i++;
+        }));
     }
 
-    validImages.reverse(); 
+    let results = await Promise.all(promises);
+    let validImages = results.filter(res => res !== null).sort((a, b) => b.id - a.id);
+
     container.innerHTML = "";
 
-    if(validImages.length === 0) {
+    if (validImages.length === 0) {
         container.innerHTML = `<div style="grid-column: 1/-1; text-align:center; padding: 30px 10px; background: rgba(0,0,0,0.2); border-radius: 12px; border: 1px dashed rgba(255,255,255,0.1);"><i class="fa-solid fa-box-open text-muted" style="font-size: 3rem; margin-bottom: 15px;"></i><h4 style="color: var(--putih); margin-bottom: 5px;">Stok Belum Tersedia</h4><p class="text-muted" style="font-size:0.9rem;">Saat ini belum ada ${waType} yang dipublikasikan. Silakan hubungi admin untuk info lebih lanjut.</p></div>`;
         return;
     }
