@@ -37,20 +37,26 @@ h1, h2, h3, h4 { font-family: 'Poppins', sans-serif; }
     backface-visibility: hidden; perspective: 1000px;
 }
 
-/* PRELOADER ANIMASI (REVISI WARNA DYLF ANTI-TRANSPARAN) */
+/* ====================================================
+   PRELOADER ANIMASI (REVISI BLUR DIHILANGKAN TOTAL) 
+   ==================================================== */
 #preloader { position: fixed; top: 0; left: 0; width: 100%; height: 100vh; background-color: var(--bg-dark); display: flex; justify-content: center; align-items: center; z-index: 9999; transition: opacity 0.5s ease, visibility 0.5s ease; }
 .welcome-text { font-size: clamp(1.8rem, 5vw, 3.5rem); font-weight: 800; display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; text-align: center; }
 .welcome-text .word-box { display: inline-block; margin-right: 15px; }
 
-/* Menghapus Blur di animasi agar Gradient Teks berfungsi sempurna di WebKit Browser */
-.welcome-text .letter-box { display: inline-block; opacity: 0; transform: translateY(30px) scale(0.8); animation: textReveal 0.8s ease-out forwards; color: var(--putih); }
+/* Tidak ada lagi filter blur, dijamin HD & Tajam */
+.welcome-text .letter-box { 
+    display: inline-block; opacity: 0; transform: translateY(30px) scale(0.8); 
+    animation: textReveal 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards; 
+    color: var(--putih); 
+}
 @keyframes textReveal { 
     0% { opacity: 0; transform: translateY(30px) scale(0.8); } 
-    50% { opacity: 1; transform: translateY(-5px) scale(1.05); text-shadow: 0 0 20px rgba(139, 92, 246, 0.4); } 
+    50% { opacity: 1; transform: translateY(-5px) scale(1.05); text-shadow: 0 0 15px rgba(139, 92, 246, 0.3); } 
     100% { opacity: 1; transform: translateY(0) scale(1); } 
 }
 
-/* Gradient solid dengan Drop Shadow filter */
+/* Pewarnaan solid DYLF bercahaya */
 .text-logo-dylf { 
     background: linear-gradient(90deg, var(--cyan), var(--ungu-neon)) !important; 
     -webkit-background-clip: text !important; 
@@ -58,8 +64,9 @@ h1, h2, h3, h4 { font-family: 'Poppins', sans-serif; }
     -webkit-text-fill-color: transparent !important; 
     display: inline-block; 
     font-weight: 900; 
-    filter: drop-shadow(0px 0px 8px rgba(139, 92, 246, 0.6));
+    filter: drop-shadow(0px 0px 5px rgba(139, 92, 246, 0.4));
 }
+/* ==================================================== */
 
 /* NAVBAR */
 nav { position: fixed; top: 0; width: 100%; padding: 15px 5%; display: flex; justify-content: space-between; align-items: center; background: var(--bg-dark); opacity: 0.95; backdrop-filter: blur(10px); border-bottom: 1px solid var(--card-border); z-index: 1000; transition: background-color 0.4s ease; }
@@ -135,7 +142,7 @@ nav { position: fixed; top: 0; width: 100%; padding: 15px 5%; display: flex; jus
 .section-header-left { margin-bottom: 15px; }
 .section-title { font-size: 1.5rem; }
 
-/* REVISI LAYOUT BANNER VIP UNTUK LAPTOP (Menyamping) */
+/* BANNER VIP LAPTOP (Menyamping & Rapi) */
 .vip-banner-box { 
     background: var(--card-bg); border: 1px solid rgba(37, 211, 102, 0.3); border-radius: 16px; 
     padding: 25px; margin-bottom: 20px; 
@@ -144,7 +151,7 @@ nav { position: fixed; top: 0; width: 100%; padding: 15px 5%; display: flex; jus
 .vip-content-left { display: flex; align-items: center; gap: 15px; flex: 1; text-align: left; }
 .vip-icon { width: 55px; height: 55px; background: rgba(37, 211, 102, 0.15); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #25D366; font-size: 1.8rem; flex-shrink: 0; }
 .vip-text h4 { color: var(--putih); font-size: 1.15rem; margin-bottom: 5px; }
-.vip-text p { font-size: 0.9rem; line-height: 1.5; margin: 0; }
+.vip-text p { font-size: 0.9rem; line-height: 1.5; margin: 0; color: var(--abu); }
 .vip-buttons-right { display: flex; gap: 12px; flex-shrink: 0; }
 
 .btn-primary, .btn-outline-navy { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 10px 15px; border-radius: 8px; font-weight: 600; text-decoration: none; transition: 0.3s; cursor: pointer; border: none; font-size: 0.9rem; }
@@ -177,8 +184,8 @@ nav { position: fixed; top: 0; width: 100%; padding: 15px 5%; display: flex; jus
 .testi-item img { width: 100%; height: 100%; object-fit: cover; }
 
 .btn-lihat-semua { width: 100%; padding: 10px; margin-top: 15px; background: transparent; border-radius: 8px; cursor: pointer; font-size: 0.9rem; font-weight: 600; border: 1px dashed var(--card-border); color: var(--putih); transition: 0.3s; }
-.cyan-glow:hover { color: var(--cyan); border-color: var(--cyan); }
-.purple-glow:hover { color: var(--ungu-neon); border-color: var(--ungu-neon); }
+.cyan-glow:hover { color: var(--cyan); border-color: var(--cyan); background: rgba(6, 182, 212, 0.05); }
+.purple-glow:hover { color: var(--ungu-neon); border-color: var(--ungu-neon); background: rgba(139, 92, 246, 0.05); }
 
 .testi-modal-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 15px; max-height: 60vh; overflow-y: auto; padding-right: 10px; margin-top: 20px; }
 .testi-modal-grid::-webkit-scrollbar { width: 6px; }
@@ -207,7 +214,7 @@ nav { position: fixed; top: 0; width: 100%; padding: 15px 5%; display: flex; jus
     .footer-grid { grid-template-columns: 1fr 1fr; gap: 25px; }
     .testi-modal-grid { grid-template-columns: repeat(3, 1fr); }
     
-    /* Mode HP Banner VIP menjadi tumpuk ke bawah */
+    /* Layout Banner VIP diubah menjadi tumpuk khusus untuk layar HP agar muat */
     .vip-banner-box { flex-direction: column; text-align: center; justify-content: center; }
     .vip-content-left { flex-direction: column; text-align: center; }
     .vip-buttons-right { width: 100%; flex-direction: column; }
