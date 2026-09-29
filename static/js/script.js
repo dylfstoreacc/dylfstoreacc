@@ -1,4 +1,3 @@
-// INISIALISASI GOOGLE TRANSLATE (Tersembunyi)
 function googleTranslateElementInit() {
     new google.translate.TranslateElement({
         pageLanguage: 'id',
@@ -8,18 +7,15 @@ function googleTranslateElementInit() {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-    // 1. INIT THEME (Light/Dark Mode)
+    // 1. INIT THEME
     const savedTheme = localStorage.getItem('theme');
     if(savedTheme === 'light') {
         document.body.classList.add('light-mode');
         const themeIcon = document.getElementById('themeIcon');
-        if(themeIcon) {
-            themeIcon.classList.remove('fa-moon');
-            themeIcon.classList.add('fa-sun');
-        }
+        if(themeIcon) { themeIcon.classList.replace('fa-moon', 'fa-sun'); }
     }
 
-    // 2. PRELOADER ANIMASI TEKS
+    // 2. PRELOADER ANIMASI
     const welcomeTextContainer = document.getElementById("welcomeText");
     if(welcomeTextContainer) {
         welcomeTextContainer.innerHTML = ""; 
@@ -30,9 +26,7 @@ document.addEventListener("DOMContentLoaded", () => {
         words.forEach((word) => {
             const wordContainer = document.createElement("span");
             wordContainer.className = "word-box";
-            
             if(word === "DYLF") wordContainer.classList.add("text-logo-dylf");
-            if(word === "STOREacc") wordContainer.classList.add("text-logo-store");
             
             word.split("").forEach((char) => {
                 const charSpan = document.createElement("span");
@@ -49,9 +43,9 @@ document.addEventListener("DOMContentLoaded", () => {
             const preloader = document.getElementById("preloader");
             if(preloader) {
                 preloader.style.opacity = "0";
-                setTimeout(() => { preloader.style.visibility = "hidden"; }, 800);
+                setTimeout(() => { preloader.remove(); }, 500); // Hapus total dari memori agar ringan
             }
-        }, 3000); 
+        }, 2500); 
     }
 
     // 3. SWIPER CAROUSEL
@@ -60,20 +54,20 @@ document.addEventListener("DOMContentLoaded", () => {
         pagination: { el: '.swiper-pagination', clickable: true }, loop: true 
     });
 
-    // 4. LOAD DATA STREAMING CANGGIH (Memuat foto satu per satu secara instan tanpa menunggu semua beres)
-    // Parameter: (previewId, modalId, folderName, isKatalog, typeName, maksimalCekAngka)
-    loadDataStream('preview-testi-stok', 'full-testi-stok', 'stok', false, '', 150);
-    loadDataStream('preview-testi-rekber', 'full-testi-rekber', 'rekber', false, '', 100);
-    loadDataStream('preview-testi-topup', 'full-testi-topup', 'topup', false, '', 50);
-    loadDataStream('preview-testi-convert', 'full-testi-convert', 'convert', false, '', 50);
+    // 4. BATCHED SCANNER (Loading Cerdas Tanpa Memberatkan Jaringan)
+    // Cukup set angka tertinggi perkiraan stok, script akan melompat dan menarik secara otomatis
+    loadBatchedImages('preview-testi-stok', 'full-testi-stok', 'stok', false, '', 150);
+    loadBatchedImages('preview-testi-rekber', 'full-testi-rekber', 'rekber', false, '', 100);
+    loadBatchedImages('preview-testi-topup', 'full-testi-topup', 'topup', false, '', 50);
+    loadBatchedImages('preview-testi-convert', 'full-testi-convert', 'convert', false, '', 50);
 
-    loadDataStream(null, 'katalog-stok-grid', 'stok', true, 'Stok Akun', 100);
-    loadDataStream(null, 'katalog-topup-grid', 'topup', true, 'Topup Item', 50);
+    loadBatchedImages(null, 'katalog-stok-grid', 'stok', true, 'Stok Akun', 100);
+    loadBatchedImages(null, 'katalog-topup-grid', 'topup', true, 'Topup Item', 50);
     
-    // 5. JALANKAN ANIMASI SCROLL
+    // 5. ANIMASI SCROLL
     initScrollReveal();
 
-    // 6. SIDEBAR MENU LOGIC
+    // 6. SIDEBAR LOGIC
     const menuBtn = document.getElementById('mobileMenuBtn');
     const closeBtn = document.getElementById('closeSidebarBtn');
     const sidebar = document.getElementById('sidebarMenu');
@@ -85,7 +79,7 @@ document.addEventListener("DOMContentLoaded", () => {
         overlay.classList.toggle('active');
     }
 
-    if(menuBtn && closeBtn && overlay) {
+    if(menuBtn) {
         menuBtn.addEventListener('click', toggleSidebar);
         closeBtn.addEventListener('click', toggleSidebar);
         overlay.addEventListener('click', toggleSidebar);
@@ -93,22 +87,20 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 });
 
-// FUNGSI UBAH TEMA (DARK/LIGHT MODE)
+// FUNGSI TEMA
 function toggleTheme() {
     document.body.classList.toggle('light-mode');
     const themeIcon = document.getElementById('themeIcon');
     if(document.body.classList.contains('light-mode')) {
-        themeIcon.classList.remove('fa-moon');
-        themeIcon.classList.add('fa-sun');
+        themeIcon.classList.replace('fa-moon', 'fa-sun');
         localStorage.setItem('theme', 'light');
     } else {
-        themeIcon.classList.remove('fa-sun');
-        themeIcon.classList.add('fa-moon');
+        themeIcon.classList.replace('fa-sun', 'fa-moon');
         localStorage.setItem('theme', 'dark');
     }
 }
 
-// FUNGSI GANTI BAHASA AUTO TRANSLATE
+// FUNGSI GANTI BAHASA
 function changeLang(googleCode, langText, btnElement, flagCode) {
     document.getElementById('currentFlag').src = `https://flagcdn.com/w20/${flagCode}.png`;
     document.getElementById('currentLang').innerText = langText;
@@ -126,16 +118,14 @@ function changeLang(googleCode, langText, btnElement, flagCode) {
     }
     triggerTranslate();
     setTimeout(triggerTranslate, 500); 
-
     closeModal('langModal');
 }
 
-// SISTEM SMART SCANNER PROGRESSIVE/STREAMING (Bebas Lag & Muncul Seketika)
-function loadDataStream(previewId, fullId, folderName, isKatalog, waType, maxCheck) {
+// BATCHED IMAGE SCANNER (Sistem anti-lag jaringan: Mengecek 10 gambar sekaligus lalu berhenti jika kosong)
+async function loadBatchedImages(previewId, fullId, folderName, isKatalog, waType, startMax) {
     const preview = document.getElementById(previewId);
     const full = document.getElementById(fullId);
     
-    // Tampilkan Loading Spinner Besar
     if (preview && !isKatalog) {
         preview.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 20px;"><i class="fa-solid fa-spinner fa-spin text-cyan" style="font-size: 1.5rem;"></i></div>`;
     }
@@ -144,26 +134,45 @@ function loadDataStream(previewId, fullId, folderName, isKatalog, waType, maxChe
     }
 
     let validItems = [];
-    let pendingChecks = maxCheck;
+    let consecutiveEmpty = 0;
+    let batchSize = 10;
+    let currentId = 1;
+    let keepScanning = true;
 
-    // Lakukan pencarian dari angka terbesar secara paralel
-    for (let i = maxCheck; i >= 1; i--) {
-        checkImg(i).then(src => {
-            pendingChecks--;
+    // Memindai secara progresif dari 1 sampai batas agar jaringan tidak overload
+    while(keepScanning && currentId <= startMax) {
+        let promises = [];
+        let batchStart = currentId;
+        
+        for(let b = 0; b < batchSize; b++) {
+            promises.push(checkImg(batchStart + b, folderName, isKatalog));
+        }
+
+        let results = await Promise.all(promises);
+        let batchHasFound = false;
+
+        results.forEach((src, index) => {
             if (src) {
-                validItems.push({ id: i, src: src });
-                // Urutkan otomatis setiap kali ada foto baru ditemukan
-                validItems.sort((a, b) => b.id - a.id);
-                // Render Ulang secara instan (Streaming)
-                renderDOM();
-            } else if (pendingChecks === 0 && validItems.length === 0) {
-                // Jika semua dicek dan 100% kosong
-                renderEmpty();
+                validItems.push({id: batchStart + index, src: src});
+                batchHasFound = true;
+                consecutiveEmpty = 0; // Reset
+            } else {
+                consecutiveEmpty++;
             }
         });
+
+        if (consecutiveEmpty >= 5) {
+            keepScanning = false; // Stop pencarian jika 5x berturut-turut kosong
+        }
+        currentId += batchSize;
     }
 
-    function checkImg(i) {
+    // Urutkan dari angka terbesar ke terkecil
+    validItems.sort((a, b) => b.id - a.id);
+
+    renderDOM();
+
+    function checkImg(i, folder, katalogFlag) {
         return new Promise(resolve => {
             let img = new Image();
             img.onload = () => resolve(img.src);
@@ -171,15 +180,26 @@ function loadDataStream(previewId, fullId, folderName, isKatalog, waType, maxChe
                 let imgPng = new Image();
                 imgPng.onload = () => resolve(imgPng.src);
                 imgPng.onerror = () => resolve(null);
-                imgPng.src = `static/img/${isKatalog ? 'katalog' : 'testimoni'}/${folderName}/${i}.png`;
+                imgPng.src = `static/img/${katalogFlag ? 'katalog' : 'testimoni'}/${folder}/${i}.png`;
             };
-            img.src = `static/img/${isKatalog ? 'katalog' : 'testimoni'}/${folderName}/${i}.jpg`;
+            img.src = `static/img/${katalogFlag ? 'katalog' : 'testimoni'}/${folder}/${i}.jpg`;
         });
     }
 
     function renderDOM() {
         let fullHTML = '';
         let previewHTML = '';
+
+        if(validItems.length === 0) {
+            if(isKatalog) {
+                fullHTML = `<div style="grid-column: 1/-1; text-align:center; padding: 30px 10px; background: rgba(0,0,0,0.2); border-radius: 12px; border: 1px dashed rgba(255,255,255,0.1);"><i class="fa-solid fa-box-open text-muted" style="font-size: 3rem; margin-bottom: 15px;"></i><h4 style="color: var(--putih); margin-bottom: 5px;">Stok Belum Tersedia</h4><p class="text-muted" style="font-size:0.9rem;">Saat ini belum ada ${waType} yang dipublikasikan. Silakan hubungi admin.</p></div>`;
+            } else {
+                fullHTML = `<div style="grid-column: 1/-1; text-align:center; padding: 20px;"><p class="text-muted" style="font-size:0.85rem;">Belum ada testimoni.</p></div>`;
+            }
+            if (full) full.innerHTML = fullHTML;
+            if (preview && !isKatalog) preview.innerHTML = fullHTML;
+            return;
+        }
 
         validItems.forEach((item, index) => {
             if (isKatalog) {
@@ -194,7 +214,6 @@ function loadDataStream(previewId, fullId, folderName, isKatalog, waType, maxChe
             } else {
                 const testiHTML = `<div class="testi-item"><img src="${item.src}" loading="lazy"></div>`;
                 fullHTML += testiHTML;
-                // Hanya 4 Foto untuk Preview Beranda
                 if (index < 4) previewHTML += testiHTML;
             }
         });
@@ -202,20 +221,9 @@ function loadDataStream(previewId, fullId, folderName, isKatalog, waType, maxChe
         if (full) full.innerHTML = fullHTML;
         if (preview && !isKatalog) preview.innerHTML = previewHTML;
     }
-
-    function renderEmpty() {
-        let emptyHTML = '';
-        if(isKatalog) {
-            emptyHTML = `<div style="grid-column: 1/-1; text-align:center; padding: 30px 10px; background: rgba(0,0,0,0.2); border-radius: 12px; border: 1px dashed rgba(255,255,255,0.1);"><i class="fa-solid fa-box-open text-muted" style="font-size: 3rem; margin-bottom: 15px;"></i><h4 style="color: var(--putih); margin-bottom: 5px;">Stok Belum Tersedia</h4><p class="text-muted" style="font-size:0.9rem;">Saat ini belum ada ${waType} yang dipublikasikan. Silakan hubungi admin.</p></div>`;
-        } else {
-            emptyHTML = `<div style="grid-column: 1/-1; text-align:center; padding: 20px;"><p class="text-muted" style="font-size:0.85rem;">Belum ada testimoni.</p></div>`;
-        }
-        if (full) full.innerHTML = emptyHTML;
-        if (preview && !isKatalog) preview.innerHTML = emptyHTML;
-    }
 }
 
-// FUNGSI BUKA TUTUP MODAL
+// MODAL CONTROLLER
 function openModal(id) { document.getElementById(id).style.display = 'flex'; }
 function closeModal(id) { document.getElementById(id).style.display = 'none'; }
 
@@ -226,7 +234,7 @@ window.onclick = function(event) {
     });
 }
 
-// FUNGSI SCROLL REVEAL OPTIMAL
+// SCROLL REVEAL (Anti-Layer Explosion)
 function initScrollReveal() {
     const reveals = document.querySelectorAll('.reveal');
     const observer = new IntersectionObserver((entries, obs) => {
