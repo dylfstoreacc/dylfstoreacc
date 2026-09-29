@@ -15,7 +15,15 @@ body.light-mode {
     --card-border: rgba(0,0,0,0.1);
 }
 
-* { margin: 0; padding: 0; box-sizing: border-box; scroll-behavior: smooth; font-family: 'Urbanist', sans-serif; }
+/* ANTI-BERCAK TAP HIGHLIGHT & RESET OUTLINE */
+* { 
+    margin: 0; padding: 0; box-sizing: border-box; scroll-behavior: smooth; font-family: 'Urbanist', sans-serif; 
+    -webkit-tap-highlight-color: transparent; 
+}
+a, button, .service-card, .menu-toggle, .theme-toggle, .currency-badge, .close-sidebar, .close-btn { 
+    outline: none; 
+}
+
 html, body { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; overflow-x: hidden; }
 body { background-color: var(--bg-dark); color: var(--putih); -webkit-font-smoothing: antialiased; transition: background-color 0.4s ease, color 0.4s ease; }
 
@@ -37,26 +45,25 @@ h1, h2, h3, h4 { font-family: 'Poppins', sans-serif; }
     backface-visibility: hidden; perspective: 1000px;
 }
 
-/* =========================================================
-   PRELOADER ANIMASI (REVISI WARNA DYLF PUTIH BERCAHAYA) 
-   ========================================================= */
+/* PRELOADER ANIMASI (TEKS DYLF PUTIH BERCAHAYA 100% TAJAM) */
 #preloader { position: fixed; top: 0; left: 0; width: 100%; height: 100vh; background-color: var(--bg-dark); display: flex; justify-content: center; align-items: center; z-index: 9999; transition: opacity 0.5s ease, visibility 0.5s ease; }
 .welcome-text { font-size: clamp(1.8rem, 5vw, 3.5rem); font-weight: 800; display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; text-align: center; }
 .welcome-text .word-box { display: inline-block; margin-right: 15px; }
+
+/* Animasi Fade-In & Slide-Up Mulus Tanpa Blur */
 .welcome-text .letter-box { 
-    display: inline-block; opacity: 0; transform: translateY(30px) scale(0.8); 
-    animation: textReveal 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards; color: var(--putih); 
+    display: inline-block; opacity: 0; transform: translateY(30px); 
+    animation: textRevealHD 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards; color: var(--putih); 
 }
-@keyframes textReveal { 
-    0% { opacity: 0; transform: translateY(30px) scale(0.8); } 
-    50% { opacity: 1; transform: translateY(-5px) scale(1.05); } 
-    100% { opacity: 1; transform: translateY(0) scale(1); } 
+@keyframes textRevealHD { 
+    0% { opacity: 0; transform: translateY(30px); } 
+    100% { opacity: 1; transform: translateY(0); } 
 }
 
-/* Tulisan DYLF dijamin 100% Solid Putih Terang dengan efek Neon Glow */
+/* Tulisan DYLF Putih Solid dengan efek Glowing Neon */
 .text-logo-dylf { 
-    color: #F8FAFC !important; 
-    text-shadow: 0 0 15px rgba(6, 182, 212, 0.8), 0 0 30px rgba(6, 182, 212, 0.5) !important; 
+    color: #FFFFFF !important; 
+    text-shadow: 0 0 10px #06B6D4, 0 0 20px #06B6D4, 0 0 40px #8B5CF6 !important; 
     display: inline-block; 
     font-weight: 900; 
 }
@@ -66,10 +73,10 @@ nav { position: fixed; top: 0; width: 100%; padding: 15px 5%; display: flex; jus
 .watermark-logo { height: 40px; object-fit: contain; }
 .nav-right { display: flex; align-items: center; gap: 15px; }
 .currency-badge { background: var(--card-bg); padding: 6px 12px; border-radius: 20px; font-size: 0.85rem; font-weight: 600; display: flex; align-items: center; gap: 8px; border: 1px solid var(--card-border); transition: 0.3s; }
-.currency-badge:hover { border-color: var(--cyan); }
+.currency-badge:active { transform: scale(0.95); }
 .currency-badge img { width: 18px; border-radius: 2px; }
 .menu-toggle, .theme-toggle { font-size: 1.5rem; color: var(--putih); transition: 0.3s; }
-.menu-toggle:hover, .theme-toggle:hover { color: var(--cyan); }
+.menu-toggle:active, .theme-toggle:active { transform: scale(0.9); }
 
 /* SIDEBAR MENU */
 .sidebar-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100vh; background: rgba(0,0,0,0.7); z-index: 1001; opacity: 0; visibility: hidden; transition: 0.3s; }
@@ -78,28 +85,30 @@ nav { position: fixed; top: 0; width: 100%; padding: 15px 5%; display: flex; jus
 .sidebar-menu.active { right: 0; }
 .sidebar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; padding-bottom: 15px; border-bottom: 1px solid var(--card-border); }
 .close-sidebar { font-size: 1.8rem; color: var(--abu); cursor: pointer; transition: 0.3s; }
-.close-sidebar:hover { color: var(--cyan); }
+.close-sidebar:active { transform: scale(0.9); }
 .sidebar-links { display: flex; flex-direction: column; gap: 15px; }
 .sidebar-link { color: var(--putih); text-decoration: none; font-size: 1.05rem; padding: 12px 18px; background: var(--card-bg); border-radius: 12px; display: flex; align-items: center; gap: 15px; transition: 0.3s; font-weight: 600; border: 1px solid transparent; }
-.sidebar-link:hover { border-color: var(--cyan); color: var(--cyan); transform: translateX(-5px); }
+.sidebar-link:active { transform: scale(0.97); }
 
 /* MODALS */
 .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 2000; display: none; justify-content: center; align-items: center; backdrop-filter: blur(5px); padding: 20px; }
 .modal-content { background: var(--card-bg); width: 100%; padding: 30px 25px; position: relative; animation: modalPop 0.3s ease; max-width: 500px; border-radius: 20px; border: 1px solid var(--card-border); }
 .modal-large { max-width: 800px; padding: 30px; }
-.close-btn { position: absolute; top: 15px; right: 20px; font-size: 2rem; color: var(--abu); cursor: pointer; z-index: 10;}
+.close-btn { position: absolute; top: 15px; right: 20px; font-size: 2rem; color: var(--abu); cursor: pointer; z-index: 10; transition: 0.2s;}
+.close-btn:active { transform: scale(0.8); }
 @keyframes modalPop { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
 
 .lang-options { display: flex; flex-direction: column; gap: 12px; }
 .lang-btn { background: var(--bg-dark); border: 1px solid var(--card-border); padding: 15px; border-radius: 10px; color: var(--putih); display: flex; align-items: center; gap: 15px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: 0.3s; width: 100%; text-align: left; }
-.lang-btn:hover, .lang-btn.active { border-color: var(--cyan); color: var(--cyan); }
+.lang-btn:active { transform: scale(0.98); }
+.lang-btn.active { border-color: var(--cyan); color: var(--cyan); }
 .lang-btn img { width: 24px; border-radius: 3px; }
 
 .about-list-box { text-align: left; margin-bottom: 15px; background: var(--bg-dark); padding: 15px; border-radius: 10px; border: 1px dashed var(--cyan); color: var(--putih); }
 
 /* FLOATING WA */
 .floating-wa { position: fixed; bottom: 25px; right: 25px; width: 55px; height: 55px; background: #25D366; color: #fff; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 1.8rem; box-shadow: 0 5px 20px rgba(37, 211, 102, 0.4); z-index: 999; transition: transform 0.3s; text-decoration: none; }
-.floating-wa:hover { transform: scale(1.1); color: #fff; }
+.floating-wa:active { transform: scale(0.9); }
 
 /* BENTO DASHBOARD */
 .dashboard-layout { padding: 90px 5% 10px; max-width: 1200px; margin: 0 auto; display: grid; gap: 20px; grid-template-columns: 2fr 1fr; }
@@ -151,14 +160,15 @@ nav { position: fixed; top: 0; width: 100%; padding: 15px 5%; display: flex; jus
 .btn-primary { background: var(--cyan); color: #fff; }
 .btn-outline-navy { background: transparent; border: 1px dashed var(--cyan); color: var(--cyan); }
 .btn-gradient-navy { background: linear-gradient(45deg, var(--cyan), var(--ungu-neon)); color: #fff; display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 12px 15px; border-radius: 8px; font-weight: 600; text-decoration: none; transition: 0.3s; }
+.btn-primary:active, .btn-outline-navy:active, .btn-gradient-navy:active { transform: scale(0.95); }
 
 .grid-container { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; }
-.service-card { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 16px; padding: 20px 15px; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: 0.3s; }
-.service-card:hover { transform: translateY(-5px); border-color: var(--cyan); box-shadow: 0 10px 20px rgba(6, 182, 212, 0.1); }
+.service-card { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 16px; padding: 20px 15px; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: 0.3s; cursor: pointer; }
+.service-card:active { transform: scale(0.96); border-color: var(--cyan); }
 .service-icon { width: 55px; height: 55px; border-radius: 50%; background: rgba(6, 182, 212, 0.1); color: var(--cyan); font-size: 1.5rem; display: flex; justify-content: center; align-items: center; margin-bottom: 12px; }
 .service-card h4 { font-size: 1.05rem; color: var(--putih); margin-bottom: 5px; line-height: 1.3; }
 
-/* KATALOG ITEM MODAL */
+/* KATALOG ITEM MODAL (JUAL BELI & TOPUP) */
 .katalog-modal-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 15px; max-height: 60vh; overflow-y: auto; padding-right: 10px; margin-top: 10px; }
 .katalog-modal-grid::-webkit-scrollbar { width: 6px; }
 .katalog-modal-grid::-webkit-scrollbar-track { background: rgba(0,0,0,0.1); border-radius: 10px; }
@@ -177,8 +187,7 @@ nav { position: fixed; top: 0; width: 100%; padding: 15px 5%; display: flex; jus
 .testi-item img { width: 100%; height: 100%; object-fit: cover; }
 
 .btn-lihat-semua { width: 100%; padding: 10px; margin-top: 15px; background: transparent; border-radius: 8px; cursor: pointer; font-size: 0.9rem; font-weight: 600; border: 1px dashed var(--card-border); color: var(--putih); transition: 0.3s; }
-.cyan-glow:hover { color: var(--cyan); border-color: var(--cyan); }
-.purple-glow:hover { color: var(--ungu-neon); border-color: var(--ungu-neon); }
+.btn-lihat-semua:active { transform: scale(0.97); }
 
 .testi-modal-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 15px; max-height: 60vh; overflow-y: auto; padding-right: 10px; margin-top: 20px; }
 .testi-modal-grid::-webkit-scrollbar { width: 6px; }
