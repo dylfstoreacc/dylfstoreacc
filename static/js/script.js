@@ -19,7 +19,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    // 2. PRELOADER ANIMASI TEKS (Warna DYLF Navy Gradient)
+    // 2. PRELOADER ANIMASI TEKS
     const welcomeTextContainer = document.getElementById("welcomeText");
     if(welcomeTextContainer) {
         welcomeTextContainer.innerHTML = ""; 
@@ -66,7 +66,7 @@ document.addEventListener("DOMContentLoaded", () => {
     loadTestimonialsDynamic('preview-testi-topup', 'full-testi-topup', 'topup');
     loadTestimonialsDynamic('preview-testi-convert', 'full-testi-convert', 'convert');
 
-    // 5. LOAD KATALOG CERDAS & TOMBOL BELI WA OTOMATIS
+    // 5. LOAD KATALOG CERDAS
     loadCatalogDynamic('katalog-stok-grid', 'stok', 'Stok Akun');
     loadCatalogDynamic('katalog-topup-grid', 'topup', 'Topup Item');
     
@@ -127,16 +127,22 @@ function changeLang(googleCode, langText, btnElement, flagCode) {
     }
     
     triggerTranslate();
-    setTimeout(triggerTranslate, 500); // Antisipasi jeda loading widget
+    setTimeout(triggerTranslate, 500); 
 
     closeModal('langModal');
 }
 
-// SISTEM SMART SCANNER TESTIMONI
+// SISTEM SMART SCANNER TESTIMONI (Dengan Pemaksaan Jeda Render Loading Spinner)
 async function loadTestimonialsDynamic(previewId, fullId, folderName) {
     const previewContainer = document.getElementById(previewId);
     const fullContainer = document.getElementById(fullId);
     if(!previewContainer || !fullContainer) return;
+
+    // Menampilkan efek loading yang besar di tengah kotak
+    previewContainer.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 40px 20px;"><i class="fa-solid fa-spinner fa-spin text-cyan" style="font-size: 2.5rem;"></i><p class="text-muted" style="margin-top: 15px; font-size: 0.95rem; font-weight: 600;">Memuat Data Testimoni...</p></div>`;
+
+    // PAKSA BROWSER MENGGAMBAR SPINNER SEBELUM MENCARI DATA (Jeda 0.1 Detik)
+    await new Promise(resolve => setTimeout(resolve, 100));
 
     let validImages = [];
     let emptyCount = 0;
@@ -178,18 +184,19 @@ async function loadTestimonialsDynamic(previewId, fullId, folderName) {
     });
 }
 
-// SISTEM SMART SCANNER KATALOG (Fitur Canggih Penghubung WA Seller)
+// SISTEM SMART SCANNER KATALOG (Dengan Jeda Loading yang Sama)
 async function loadCatalogDynamic(containerId, folderName, waType) {
     const container = document.getElementById(containerId);
     if(!container) return;
 
-    container.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 20px;"><i class="fa-solid fa-spinner fa-spin text-cyan" style="font-size: 1.5rem;"></i><p class="text-muted" style="margin-top:10px;">Mengecek ketersediaan stok...</p></div>`;
+    container.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 40px 20px;"><i class="fa-solid fa-spinner fa-spin text-cyan" style="font-size: 2.5rem;"></i><p class="text-muted" style="margin-top: 15px; font-size: 0.95rem; font-weight: 600;">Mengecek Stok ${waType}...</p></div>`;
+
+    await new Promise(resolve => setTimeout(resolve, 100));
 
     let validImages = [];
     let emptyCount = 0;
     let i = 1;
 
-    // Lacak isi folder static/img/katalog/(stok atau topup)
     while(emptyCount < 5 && i <= 300) { 
         let foundSrc = await new Promise((resolve) => {
             let img = new Image();
@@ -208,18 +215,15 @@ async function loadCatalogDynamic(containerId, folderName, waType) {
         i++;
     }
 
-    validImages.reverse(); // Terbaru di atas
+    validImages.reverse(); 
     container.innerHTML = "";
 
-    // Jika tidak ada stok gambar di folder, beri peringatan mewah
     if(validImages.length === 0) {
         container.innerHTML = `<div style="grid-column: 1/-1; text-align:center; padding: 30px 10px; background: rgba(0,0,0,0.2); border-radius: 12px; border: 1px dashed rgba(255,255,255,0.1);"><i class="fa-solid fa-box-open text-muted" style="font-size: 3rem; margin-bottom: 15px;"></i><h4 style="color: var(--putih); margin-bottom: 5px;">Stok Belum Tersedia</h4><p class="text-muted" style="font-size:0.9rem;">Saat ini belum ada ${waType} yang dipublikasikan. Silakan hubungi admin untuk info lebih lanjut.</p></div>`;
         return;
     }
 
-    // Jika ada stok gambar, render kartu belanja
     validImages.forEach((item) => {
-        // Teks otomatis WhatsApp pintar!
         const message = encodeURIComponent(`Halo Admin Dileppp, saya tertarik dengan [${waType}] yang ada di Katalog Web (Gambar No. ${item.id}). Apakah masih tersedia?`);
         const waLink = `https://wa.me/6285266953530?text=${message}`;
 
