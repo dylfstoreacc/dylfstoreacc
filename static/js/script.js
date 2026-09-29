@@ -60,21 +60,20 @@ document.addEventListener("DOMContentLoaded", () => {
         pagination: { el: '.swiper-pagination', clickable: true }, loop: true 
     });
 
-    // 4. LOAD DATA TESTIMONI (PARALLEL SCANNING BLAZING FAST)
-    // Parameter angka terakhir (contoh: 150) adalah batas maksimal angka deteksi file
-    loadTestimonialsFast('preview-testi-stok', 'full-testi-stok', 'stok', 150);
-    loadTestimonialsFast('preview-testi-rekber', 'full-testi-rekber', 'rekber', 100);
-    loadTestimonialsFast('preview-testi-topup', 'full-testi-topup', 'topup', 50);
-    loadTestimonialsFast('preview-testi-convert', 'full-testi-convert', 'convert', 50);
+    // 4. LOAD DATA STREAMING CANGGIH (Memuat foto satu per satu secara instan tanpa menunggu semua beres)
+    // Parameter: (previewId, modalId, folderName, isKatalog, typeName, maksimalCekAngka)
+    loadDataStream('preview-testi-stok', 'full-testi-stok', 'stok', false, '', 150);
+    loadDataStream('preview-testi-rekber', 'full-testi-rekber', 'rekber', false, '', 100);
+    loadDataStream('preview-testi-topup', 'full-testi-topup', 'topup', false, '', 50);
+    loadDataStream('preview-testi-convert', 'full-testi-convert', 'convert', false, '', 50);
 
-    // 5. LOAD KATALOG CERDAS
-    loadCatalogFast('katalog-stok-grid', 'stok', 'Stok Akun', 100);
-    loadCatalogFast('katalog-topup-grid', 'topup', 'Topup Item', 50);
+    loadDataStream(null, 'katalog-stok-grid', 'stok', true, 'Stok Akun', 100);
+    loadDataStream(null, 'katalog-topup-grid', 'topup', true, 'Topup Item', 50);
     
-    // 6. JALANKAN ANIMASI SCROLL
+    // 5. JALANKAN ANIMASI SCROLL
     initScrollReveal();
 
-    // 7. SIDEBAR MENU LOGIC
+    // 6. SIDEBAR MENU LOGIC
     const menuBtn = document.getElementById('mobileMenuBtn');
     const closeBtn = document.getElementById('closeSidebarBtn');
     const sidebar = document.getElementById('sidebarMenu');
@@ -131,98 +130,89 @@ function changeLang(googleCode, langText, btnElement, flagCode) {
     closeModal('langModal');
 }
 
-// SISTEM SMART SCANNER TESTIMONI (PARALLEL - BEBAS LAG)
-async function loadTestimonialsFast(previewId, fullId, folderName, maxCheck) {
-    const previewContainer = document.getElementById(previewId);
-    const fullContainer = document.getElementById(fullId);
-    if(!previewContainer || !fullContainer) return;
+// SISTEM SMART SCANNER PROGRESSIVE/STREAMING (Bebas Lag & Muncul Seketika)
+function loadDataStream(previewId, fullId, folderName, isKatalog, waType, maxCheck) {
+    const preview = document.getElementById(previewId);
+    const full = document.getElementById(fullId);
+    
+    // Tampilkan Loading Spinner Besar
+    if (preview && !isKatalog) {
+        preview.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 20px;"><i class="fa-solid fa-spinner fa-spin text-cyan" style="font-size: 1.5rem;"></i></div>`;
+    }
+    if (full) {
+        full.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 40px;"><i class="fa-solid fa-spinner fa-spin text-cyan" style="font-size: 2rem;"></i><p class="text-muted" style="margin-top: 15px; font-size: 0.9rem;">Memuat Data...</p></div>`;
+    }
 
-    previewContainer.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 20px;"><i class="fa-solid fa-spinner fa-spin text-cyan" style="font-size: 2rem;"></i><p class="text-muted" style="margin-top: 10px; font-size: 0.85rem;">Memuat Data...</p></div>`;
+    let validItems = [];
+    let pendingChecks = maxCheck;
 
-    let promises = [];
-    for (let i = 1; i <= maxCheck; i++) {
-        promises.push(new Promise((resolve) => {
+    // Lakukan pencarian dari angka terbesar secara paralel
+    for (let i = maxCheck; i >= 1; i--) {
+        checkImg(i).then(src => {
+            pendingChecks--;
+            if (src) {
+                validItems.push({ id: i, src: src });
+                // Urutkan otomatis setiap kali ada foto baru ditemukan
+                validItems.sort((a, b) => b.id - a.id);
+                // Render Ulang secara instan (Streaming)
+                renderDOM();
+            } else if (pendingChecks === 0 && validItems.length === 0) {
+                // Jika semua dicek dan 100% kosong
+                renderEmpty();
+            }
+        });
+    }
+
+    function checkImg(i) {
+        return new Promise(resolve => {
             let img = new Image();
-            img.onload = () => resolve({ id: i, src: img.src });
+            img.onload = () => resolve(img.src);
             img.onerror = () => {
                 let imgPng = new Image();
-                imgPng.onload = () => resolve({ id: i, src: imgPng.src });
+                imgPng.onload = () => resolve(imgPng.src);
                 imgPng.onerror = () => resolve(null);
-                imgPng.src = `static/img/testimoni/${folderName}/${i}.png`;
+                imgPng.src = `static/img/${isKatalog ? 'katalog' : 'testimoni'}/${folderName}/${i}.png`;
             };
-            img.src = `static/img/testimoni/${folderName}/${i}.jpg`;
-        }));
+            img.src = `static/img/${isKatalog ? 'katalog' : 'testimoni'}/${folderName}/${i}.jpg`;
+        });
     }
 
-    let results = await Promise.all(promises);
-    let validImages = results.filter(res => res !== null).sort((a, b) => b.id - a.id).map(res => res.src);
+    function renderDOM() {
+        let fullHTML = '';
+        let previewHTML = '';
 
-    previewContainer.innerHTML = "";
-    fullContainer.innerHTML = "";
+        validItems.forEach((item, index) => {
+            if (isKatalog) {
+                const msg = encodeURIComponent(`Halo Admin Dileppp, saya tertarik dengan [${waType}] yang ada di Katalog Web (Gambar No. ${item.id}). Apakah masih tersedia?`);
+                fullHTML += `
+                <div class="katalog-item-card">
+                    <div class="katalog-img-box"><img src="${item.src}" loading="lazy"></div>
+                    <div class="katalog-action">
+                        <a href="https://wa.me/6285266953530?text=${msg}" target="_blank" class="btn-primary" style="width: 100%; padding: 10px; font-size: 0.85rem;"><i class="fa-brands fa-whatsapp"></i> Tanyakan Admin</a>
+                    </div>
+                </div>`;
+            } else {
+                const testiHTML = `<div class="testi-item"><img src="${item.src}" loading="lazy"></div>`;
+                fullHTML += testiHTML;
+                // Hanya 4 Foto untuk Preview Beranda
+                if (index < 4) previewHTML += testiHTML;
+            }
+        });
 
-    if (validImages.length === 0) {
-        const emptyHTML = `<p class="text-muted" style="grid-column: 1/-1; text-align:center; font-size:0.85rem;">Belum ada testimoni.</p>`;
-        previewContainer.innerHTML = emptyHTML;
-        fullContainer.innerHTML = emptyHTML;
-        return;
+        if (full) full.innerHTML = fullHTML;
+        if (preview && !isKatalog) preview.innerHTML = previewHTML;
     }
 
-    validImages.forEach((src, index) => {
-        const itemHTML = `<div class="testi-item"><img src="${src}" loading="lazy"></div>`;
-        fullContainer.insertAdjacentHTML('beforeend', itemHTML);
-        if (index < 4) {
-            previewContainer.insertAdjacentHTML('beforeend', itemHTML);
+    function renderEmpty() {
+        let emptyHTML = '';
+        if(isKatalog) {
+            emptyHTML = `<div style="grid-column: 1/-1; text-align:center; padding: 30px 10px; background: rgba(0,0,0,0.2); border-radius: 12px; border: 1px dashed rgba(255,255,255,0.1);"><i class="fa-solid fa-box-open text-muted" style="font-size: 3rem; margin-bottom: 15px;"></i><h4 style="color: var(--putih); margin-bottom: 5px;">Stok Belum Tersedia</h4><p class="text-muted" style="font-size:0.9rem;">Saat ini belum ada ${waType} yang dipublikasikan. Silakan hubungi admin.</p></div>`;
+        } else {
+            emptyHTML = `<div style="grid-column: 1/-1; text-align:center; padding: 20px;"><p class="text-muted" style="font-size:0.85rem;">Belum ada testimoni.</p></div>`;
         }
-    });
-}
-
-// SISTEM SMART SCANNER KATALOG (PARALLEL - BEBAS LAG)
-async function loadCatalogFast(containerId, folderName, waType, maxCheck) {
-    const container = document.getElementById(containerId);
-    if(!container) return;
-
-    container.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 30px;"><i class="fa-solid fa-spinner fa-spin text-cyan" style="font-size: 2rem;"></i><p class="text-muted" style="margin-top: 10px; font-size: 0.85rem;">Mengecek Stok ${waType}...</p></div>`;
-
-    let promises = [];
-    for (let i = 1; i <= maxCheck; i++) {
-        promises.push(new Promise((resolve) => {
-            let img = new Image();
-            img.onload = () => resolve({ id: i, src: img.src });
-            img.onerror = () => {
-                let imgPng = new Image();
-                imgPng.onload = () => resolve({ id: i, src: imgPng.src });
-                imgPng.onerror = () => resolve(null);
-                imgPng.src = `static/img/katalog/${folderName}/${i}.png`;
-            };
-            img.src = `static/img/katalog/${folderName}/${i}.jpg`;
-        }));
+        if (full) full.innerHTML = emptyHTML;
+        if (preview && !isKatalog) preview.innerHTML = emptyHTML;
     }
-
-    let results = await Promise.all(promises);
-    let validImages = results.filter(res => res !== null).sort((a, b) => b.id - a.id);
-
-    container.innerHTML = "";
-
-    if (validImages.length === 0) {
-        container.innerHTML = `<div style="grid-column: 1/-1; text-align:center; padding: 30px 10px; background: rgba(0,0,0,0.2); border-radius: 12px; border: 1px dashed rgba(255,255,255,0.1);"><i class="fa-solid fa-box-open text-muted" style="font-size: 3rem; margin-bottom: 15px;"></i><h4 style="color: var(--putih); margin-bottom: 5px;">Stok Belum Tersedia</h4><p class="text-muted" style="font-size:0.9rem;">Saat ini belum ada ${waType} yang dipublikasikan. Silakan hubungi admin untuk info lebih lanjut.</p></div>`;
-        return;
-    }
-
-    validImages.forEach((item) => {
-        const message = encodeURIComponent(`Halo Admin Dileppp, saya tertarik dengan [${waType}] yang ada di Katalog Web (Gambar No. ${item.id}). Apakah masih tersedia?`);
-        const waLink = `https://wa.me/6285266953530?text=${message}`;
-
-        const itemHTML = `
-        <div class="katalog-item-card">
-            <div class="katalog-img-box">
-                <img src="${item.src}" loading="lazy">
-            </div>
-            <div class="katalog-action">
-                <a href="${waLink}" target="_blank" class="btn-primary" style="width: 100%; padding: 10px; font-size: 0.85rem;"><i class="fa-brands fa-whatsapp"></i> Tanyakan Admin</a>
-            </div>
-        </div>`;
-        container.insertAdjacentHTML('beforeend', itemHTML);
-    });
 }
 
 // FUNGSI BUKA TUTUP MODAL
