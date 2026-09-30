@@ -42,9 +42,9 @@ document.addEventListener("DOMContentLoaded", () => {
         }, 3000); 
     }
 
-    new Swiper('.hero-carousel-container', { effect: 'fade', speed: 800, autoplay: { delay: 3000, disableOnInteraction: false }, pagination: { el: '.swiper-pagination', clickable: true }, loop: true });
+    // Menggunakan animasi slide default Swiper untuk mencegah konflik GPU di HP
+    new Swiper('.hero-carousel-container', { speed: 800, autoplay: { delay: 3000, disableOnInteraction: false }, pagination: { el: '.swiper-pagination', clickable: true }, loop: true });
 
-    // SET LIMIT MAKSIMAL SCAN DI SINI (Dinaikkan otomatis ke 300 agar bebas upload ke depannya)
     setTimeout(() => {
         loadDataStreamBatch('preview-testi-stok', 'full-testi-stok', 'stok', false, '', 300);
         loadDataStreamBatch('preview-testi-rekber', 'full-testi-rekber', 'rekber', false, '', 300);
@@ -106,7 +106,6 @@ window.zoomImage = function(src) {
     openModal('imageZoomModal');
 }
 
-// KUNCI PERBAIKAN: LOOP MUNDUR DARI ANGKA TERBESAR KE TERKECIL
 async function loadDataStreamBatch(previewId, fullId, folderName, isKatalog, waType, maxCheck) {
     const preview = document.getElementById(previewId);
     const full = document.getElementById(fullId);
@@ -115,22 +114,16 @@ async function loadDataStreamBatch(previewId, fullId, folderName, isKatalog, waT
     if (full) { full.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 40px;"><i class="fa-solid fa-spinner fa-spin text-cyan" style="font-size: 2rem;"></i><p class="text-muted" style="margin-top: 15px; font-size: 0.9rem;">Memuat Data...</p></div>`; }
 
     let validItems = [];
-    const batchSize = 30; // Cek 30 file sekaligus agar sangat cepat
+    const batchSize = 30; 
 
-    // Mencari dari 300 -> 1 (Terbaru -> Lama)
     for (let i = maxCheck; i >= 1; i -= batchSize) {
         let promises = [];
-        for (let j = i; j > i - batchSize && j >= 1; j--) { 
-            promises.push(checkImg(j)); 
-        }
+        for (let j = i; j > i - batchSize && j >= 1; j--) { promises.push(checkImg(j)); }
         let results = await Promise.all(promises);
         
-        results.forEach(res => {
-            if (res) validItems.push(res);
-        });
+        results.forEach(res => { if (res) validItems.push(res); });
     }
 
-    // Fungsi Render Output
     function checkImg(id) {
         return new Promise(resolve => {
             let img = new Image();
