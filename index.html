@@ -17,22 +17,24 @@
         <div class="welcome-text" id="welcomeText"></div>
     </div>
 
+    <!-- NAVBAR APP STYLE -->
     <nav id="navbar">
         <a href="#home" class="logo">
             <img src="static/img/produk/watermark_logo.png" alt="DYLF STOREacc" class="watermark-logo" onerror="this.src='https://via.placeholder.com/200x50/020617/06B6D4?text=DYLF+STORE'">
         </a>
         <div class="nav-right">
-            <div class="theme-toggle" onclick="toggleTheme()" title="Ubah Tema" style="cursor: pointer; margin-right: 5px; font-size: 1.3rem;">
+            <div class="theme-toggle" onclick="toggleTheme()" title="Ubah Tema">
                 <i class="fa-solid fa-moon" id="themeIcon"></i>
             </div>
-            <div class="currency-badge" onclick="openModal('langModal')" style="cursor: pointer;" title="Pilih Bahasa">
+            <div class="currency-badge" onclick="openModal('langModal')" title="Pilih Bahasa">
                 <img src="https://flagcdn.com/w20/id.png" alt="ID" id="currentFlag"> 
                 <span id="currentLang">ID</span> <i class="fa-solid fa-angle-down" style="font-size: 0.7rem; margin-left: 3px;"></i>
             </div>
-            <div class="menu-toggle" id="mobileMenuBtn" style="cursor: pointer;"><i class="fa-solid fa-bars"></i></div>
+            <div class="menu-toggle" id="mobileMenuBtn"><i class="fa-solid fa-bars"></i></div>
         </div>
     </nav>
 
+    <!-- SIDEBAR MENU -->
     <div class="sidebar-overlay" id="sidebarOverlay"></div>
     <div class="sidebar-menu" id="sidebarMenu">
         <div class="sidebar-header">
@@ -48,6 +50,7 @@
         </div>
     </div>
 
+    <!-- MODAL PILIH BAHASA -->
     <div id="langModal" class="modal-overlay">
         <div class="modal-content glass-card" style="max-width: 350px;">
             <span class="close-btn" onclick="closeModal('langModal')">&times;</span>
@@ -60,10 +63,17 @@
         </div>
     </div>
 
+    <!-- MODAL ZOOM GAMBAR KATALOG -->
+    <div id="imageZoomModal" class="modal-overlay" style="z-index: 3000;">
+        <span class="close-btn" onclick="closeModal('imageZoomModal')" style="color: #fff; top: 20px; right: 30px; font-size: 2.5rem; text-shadow: 0 2px 10px rgba(0,0,0,0.8);">&times;</span>
+        <img id="zoomedImageSrc" src="" style="max-width: 95%; max-height: 85vh; border-radius: 12px; object-fit: contain; box-shadow: 0 10px 40px rgba(0,0,0,0.8);">
+    </div>
+
     <a href="https://wa.me/6285266953530" class="floating-wa" target="_blank">
         <i class="fa-brands fa-whatsapp"></i>
     </a>
 
+    <!-- MODAL ABOUT STORE -->
     <div id="aboutStoreModal" class="modal-overlay">
         <div class="modal-content glass-card">
             <span class="close-btn" onclick="closeModal('aboutStoreModal')">&times;</span>
@@ -82,24 +92,27 @@
         </div>
     </div>
 
+    <!-- MODAL KATALOG STOK AKUN -->
     <div id="modalKatalogStok" class="modal-overlay">
         <div class="modal-content glass-card modal-large">
             <span class="close-btn" onclick="closeModal('modalKatalogStok')">&times;</span>
             <h3 class="box-title" style="justify-content: center; margin-bottom: 5px;"><i class="fa-solid fa-cart-shopping text-cyan"></i> Katalog Stok Akun</h3>
-            <p class="text-muted" style="font-size: 0.85rem; text-align: center; margin-bottom: 20px;">Pilih akun incaranmu dan langsung tanyakan ketersediaannya ke Admin!</p>
+            <p class="text-muted" style="font-size: 0.85rem; text-align: center; margin-bottom: 20px;">Klik foto untuk perbesar. Cek spesifikasi dan tanyakan admin!</p>
             <div class="katalog-modal-grid" id="katalog-stok-grid"></div>
         </div>
     </div>
 
+    <!-- MODAL KATALOG TOPUP -->
     <div id="modalKatalogTopup" class="modal-overlay">
         <div class="modal-content glass-card modal-large">
             <span class="close-btn" onclick="closeModal('modalKatalogTopup')">&times;</span>
             <h3 class="box-title" style="justify-content: center; margin-bottom: 5px;"><i class="fa-solid fa-gem text-cyan"></i> Katalog Topup Item</h3>
-            <p class="text-muted" style="font-size: 0.85rem; text-align: center; margin-bottom: 20px;">Pilih item / pricelist topup yang tersedia hari ini.</p>
+            <p class="text-muted" style="font-size: 0.85rem; text-align: center; margin-bottom: 20px;">Klik foto pricelist untuk perbesar.</p>
             <div class="katalog-modal-grid" id="katalog-topup-grid"></div>
         </div>
     </div>
 
+    <!-- MODAL INFO REKBER -->
     <div id="modalInfoRekber" class="modal-overlay">
         <div class="modal-content glass-card">
             <span class="close-btn" onclick="closeModal('modalInfoRekber')">&times;</span>
@@ -121,6 +134,7 @@
         </div>
     </div>
 
+    <!-- MODAL INFO CONVERT -->
     <div id="modalInfoConvert" class="modal-overlay">
         <div class="modal-content glass-card">
             <span class="close-btn" onclick="closeModal('modalInfoConvert')">&times;</span>
@@ -140,6 +154,7 @@
         </div>
     </div>
 
+    <!-- MODAL TESTIMONI -->
     <div id="modalTestiStok" class="modal-overlay">
         <div class="modal-content glass-card modal-large">
             <span class="close-btn" onclick="closeModal('modalTestiStok')">&times;</span>
@@ -169,6 +184,7 @@
         </div>
     </div>
 
+    <!-- KONTEN UTAMA -->
     <main class="dashboard-layout" id="dashboard">
         <div class="glass-card hero-bento reveal" id="home">
             <div class="badge-innovate"><i class="fa-solid fa-fire text-cyan"></i> Populer Sekarang!</div>
@@ -212,6 +228,7 @@
         </div>
     </main>
 
+    <!-- KATALOG LAYANAN -->
     <section id="katalog" class="compact-section reveal">
         <div class="section-header-left" style="margin-bottom: 15px;">
             <h2 class="section-title"><i class="fa-solid fa-layer-group text-cyan"></i> Layanan <span class="text-gradient-navy">DYLF STOREacc</span></h2>
@@ -226,8 +243,8 @@
                 </div>
             </div>
             <div class="vip-buttons-right">
-                <a href="https://whatsapp.com/channel/0029VbCmpXQ8vd1RqxIn6h0z" target="_blank" class="btn-outline-navy" style="border-color: #25D366; color: #25D366;"><i class="fa-solid fa-bullhorn"></i> Channel Info Stok</a>
-                <a href="https://chat.whatsapp.com/IyHj3XJikuX90k6HSiMpDP" target="_blank" class="btn-primary" style="background: #25D366; color: #fff; border: none;"><i class="fa-solid fa-users"></i> Grup Jual Beli</a>
+                <a href="https://whatsapp.com/channel/0029VbCmpXQ8vd1RqxIn6h0z" target="_blank" class="btn-outline-navy"><i class="fa-solid fa-bullhorn"></i> Channel Info Stok</a>
+                <a href="https://chat.whatsapp.com/IyHj3XJikuX90k6HSiMpDP" target="_blank" class="btn-primary"><i class="fa-solid fa-users"></i> Grup Jual Beli</a>
             </div>
         </div>
 
@@ -263,6 +280,7 @@
         </div>
     </section>
 
+    <!-- TESTIMONI -->
     <section id="testimoni" class="compact-section reveal">
         <div class="section-header-left">
             <h2 class="section-title"><i class="fa-solid fa-star text-cyan"></i> Pusat <span class="text-gradient-navy">Testimoni</span></h2>
@@ -295,6 +313,7 @@
         </div>
     </section>
 
+    <!-- FOOTER -->
     <footer class="main-footer reveal">
         <div class="footer-grid">
             <div class="footer-col">
