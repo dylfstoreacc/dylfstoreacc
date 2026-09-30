@@ -84,7 +84,7 @@ function toggleTheme() {
     }
 }
 
-// PERBAIKAN TRANSLATE: Paksa ganti bahasa secara Direct DOM agar 100% Sat-Set
+// PERBAIKAN MUTLAK TRANSLATE (SAT-SET & GAIB)
 function changeLang(googleCode, langText, btnElement, flagCode) {
     document.getElementById('currentFlag').src = `https://flagcdn.com/w20/${flagCode}.png`;
     document.getElementById('currentLang').innerText = langText;
@@ -92,16 +92,17 @@ function changeLang(googleCode, langText, btnElement, flagCode) {
     btns.forEach(btn => btn.classList.remove('active'));
     btnElement.classList.add('active');
     
+    // Paksa Eksekusi Select Google
     let selectField = document.querySelector(".goog-te-combo");
     if (selectField) { 
         selectField.value = googleCode; 
         selectField.dispatchEvent(new Event("change")); 
     } else {
-        // Fallback Anti-Gagal jika script google telat dimuat
+        // Fallback gaib tanpa terlihat
         document.cookie = `googtrans=/id/${googleCode}; path=/`;
+        document.cookie = `googtrans=/id/${googleCode}; domain=.${location.hostname}; path=/`;
         window.location.reload();
     }
-    
     closeModal('langModal');
 }
 
@@ -110,6 +111,7 @@ window.zoomImage = function(src) {
     openModal('imageZoomModal');
 }
 
+// KUNCI URUTAN (TERBARU 100% PASTI DI ATAS)
 async function loadDataDynamic(previewId, fullId, folderName, isKatalog, waType, maxCheck) {
     const preview = previewId ? document.getElementById(previewId) : null;
     const full = document.getElementById(fullId);
@@ -126,20 +128,29 @@ async function loadDataDynamic(previewId, fullId, folderName, isKatalog, waType,
     const batchSize = 10;
     let i = 1;
 
-    while (consecutiveEmpty < 5 && i <= maxCheck) {
+    // Lacak gambar (Mencegah putus di tengah jika ada gap angka)
+    while (consecutiveEmpty < 10 && i <= maxCheck) {
         let promises = [];
-        for (let j = 0; j < batchSize; j++) { promises.push(checkImg(i + j)); }
+        for (let j = 0; j < batchSize; j++) {
+            promises.push(checkImg(i + j));
+        }
+
         let results = await Promise.all(promises);
 
         for (let res of results) {
-            if (res) { validItems.push(res); consecutiveEmpty = 0; } 
-            else { consecutiveEmpty++; }
+            if (res) {
+                validItems.push(res);
+                consecutiveEmpty = 0;
+            } else {
+                consecutiveEmpty++;
+            }
         }
-        if (consecutiveEmpty >= 5) break;
+        if (consecutiveEmpty >= 10) break;
         i += batchSize;
     }
 
-    validItems.reverse();
+    // PAKSAAN MUTLAK URUTAN: Nomor terbesar (terbaru) PASTI berada paling atas
+    validItems.sort((a, b) => b.id - a.id);
 
     function checkImg(id) {
         return new Promise(resolve => {
@@ -168,13 +179,14 @@ async function loadDataDynamic(previewId, fullId, folderName, isKatalog, waType,
     } else {
         validItems.forEach((item, index) => {
             if (isKatalog) {
-                const ratioStyle = (folderName === 'stok') ? 'aspect-ratio: 3/4;' : 'aspect-ratio: 16/9;';
+                // RASIO OTOMATIS: Stok = 3:4, Topup = 16:9
+                const imgClass = (folderName === 'stok') ? 'katalog-img-stok' : 'katalog-img-topup';
                 const msg = encodeURIComponent(`Halo Admin Dileppp, saya tertarik dengan [${waType}] yang ada di Katalog Web (Gambar No. ${item.id}). Apakah masih tersedia?`);
                 const cardId = `katalog-card-${folderName}-${item.id}`;
                 
                 fullHTML += `
                 <div class="katalog-item-card">
-                    <div class="katalog-img-box" onclick="zoomImage('${item.src}')" style="cursor: zoom-in; ${ratioStyle}" title="Klik untuk perbesar">
+                    <div class="katalog-img-box ${imgClass}" onclick="zoomImage('${item.src}')" style="cursor: zoom-in;" title="Klik untuk perbesar">
                         <img src="${item.src}" loading="lazy" style="width:100%; height:100%; object-fit:cover; display:block;">
                         <div class="zoom-hint"><i class="fa-solid fa-magnifying-glass-plus"></i></div>
                     </div>
@@ -197,9 +209,18 @@ async function loadDataDynamic(previewId, fullId, folderName, isKatalog, waType,
                     });
 
             } else {
-                const testiHTML = `<div class="testi-item"><img src="${item.src}" loading="lazy"></div>`;
-                fullHTML += testiHTML;
-                if (index < 4) previewHTML += testiHTML;
+                const isTopup = (folderName === 'topup');
+                
+                // PREVIEW DI BERANDA: SEMUA WAJIB KOTAK (1:1)
+                const testiPreviewHTML = `<div class="testi-item"><img src="${item.src}" loading="lazy"></div>`;
+                if (index < 4) previewHTML += testiPreviewHTML;
+
+                // FULL MODAL: Khusus topup jadi portrait/bebas panjangnya, yang lain tetap kotak
+                if (isTopup) {
+                    fullHTML += `<div class="testi-item-portrait"><img src="${item.src}" loading="lazy"></div>`;
+                } else {
+                    fullHTML += `<div class="testi-item"><img src="${item.src}" loading="lazy"></div>`;
+                }
             }
         });
     }
@@ -208,7 +229,7 @@ async function loadDataDynamic(previewId, fullId, folderName, isKatalog, waType,
     if (preview && !isKatalog) preview.innerHTML = previewHTML;
 }
 
-// PERBAIKAN POP-UP: KEMBALI KE SISTEM DISPLAY FLEX YANG BEBAS LAG DAN STABIL
+// POP-UP ANTI-LAG PAKE SISTEM FLEX
 function openModal(id) { 
     document.getElementById(id).style.display = 'flex'; 
 }
