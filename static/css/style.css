@@ -14,13 +14,12 @@ a, button, .service-card, .menu-toggle, .theme-toggle, .currency-badge, .close-s
 html, body { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; overflow-x: hidden; }
 body { background-color: var(--bg-dark); color: var(--putih); -webkit-font-smoothing: antialiased; transition: background-color 0.4s ease, color 0.4s ease; }
 
+/* KUNCI GOOGLE TRANSLATE 100% TRANSPARAN */
 .VIpgJd-Zvi9od-ORHb-OEVmcd, .goog-te-banner-frame, .skiptranslate > iframe { display: none !important; }
 body { top: 0 !important; position: static !important; }
 .skiptranslate { color: transparent !important; }
 font { background-color: transparent !important; box-shadow: none !important; border: none !important; }
-.goog-tooltip, .goog-tooltip:hover { display: none !important; }
-.goog-text-highlight { background-color: transparent !important; box-shadow: none !important; border: none !important; }
-#goog-gt-tt { display: none !important; }
+.goog-tooltip, .goog-tooltip:hover, #goog-gt-tt, .goog-text-highlight { display: none !important; opacity: 0 !important; background-color: transparent !important; box-shadow: none !important; border: none !important; }
 
 h1, h2, h3, h4 { font-family: 'Poppins', sans-serif; }
 .text-muted { color: var(--abu); }
@@ -28,7 +27,7 @@ h1, h2, h3, h4 { font-family: 'Poppins', sans-serif; }
 .text-purple { color: var(--ungu-neon); }
 .text-gradient-navy { background: linear-gradient(90deg, var(--cyan), var(--ungu-neon)); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
 
-.glass-card, .service-card, .reveal, .testi-item, .swiper-slide { transform: translate3d(0, 0, 0); -webkit-transform: translate3d(0, 0, 0); backface-visibility: hidden; perspective: 1000px; }
+.glass-card, .service-card, .reveal, .swiper-slide { transform: translate3d(0, 0, 0); -webkit-transform: translate3d(0, 0, 0); backface-visibility: hidden; perspective: 1000px; }
 .reveal, .sidebar-menu { will-change: transform, opacity; }
 img { content-visibility: auto; }
 
@@ -60,11 +59,11 @@ nav { position: fixed; top: 0; width: 100%; padding: 15px 5%; display: flex; jus
 .sidebar-link:hover { border-color: var(--cyan); color: var(--cyan); transform: translateX(-5px); }
 .sidebar-link:active { background: rgba(6, 182, 212, 0.15); border-color: var(--cyan); color: var(--cyan); transform: scale(0.96); }
 
-/* --- PERBAIKAN POP-UP: KEMBALI KE FLEX STABIL & ANTI-LAG --- */
+/* --- PERBAIKAN POP-UP (STABIL & BISA SCROLL) --- */
 .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 2000; display: none; justify-content: center; align-items: center; backdrop-filter: blur(5px); padding: 20px; }
 .modal-content { 
     background: var(--card-bg); width: 100%; padding: 30px 25px; position: relative; 
-    animation: modalPop 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94); 
+    animation: modalPop 0.2s cubic-bezier(0.25, 0.46, 0.45, 0.94); 
     max-width: 500px; border-radius: 20px; border: 1px solid var(--card-border); 
     display: flex; flex-direction: column; max-height: 85vh;
 }
@@ -128,10 +127,10 @@ nav { position: fixed; top: 0; width: 100%; padding: 15px 5%; display: flex; jus
 .vip-text p { font-size: 0.9rem; line-height: 1.5; margin: 0; color: var(--abu); }
 .vip-buttons-right { display: flex; gap: 12px; flex-shrink: 0; }
 
-.btn-primary, .btn-outline-navy { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 10px 15px; border-radius: 8px; font-weight: 600; text-decoration: none; transition: 0.15s ease-out; cursor: pointer; border: none; font-size: 0.9rem; }
+.btn-primary, .btn-outline-navy { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 10px 15px; border-radius: 8px; font-weight: 600; text-decoration: none; transition: 0.1s ease; cursor: pointer; border: none; font-size: 0.9rem; }
 .btn-primary { background: var(--cyan); color: #fff; }
 .btn-outline-navy { background: transparent; border: 1px dashed var(--cyan); color: var(--cyan); }
-.btn-gradient-navy { background: linear-gradient(45deg, var(--cyan), var(--ungu-neon)); color: #fff; display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 12px 15px; border-radius: 8px; font-weight: 600; text-decoration: none; transition: 0.15s ease-out; }
+.btn-gradient-navy { background: linear-gradient(45deg, var(--cyan), var(--ungu-neon)); color: #fff; display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 12px 15px; border-radius: 8px; font-weight: 600; text-decoration: none; transition: 0.1s ease; }
 .btn-primary:active, .btn-outline-navy:active, .btn-gradient-navy:active { transform: scale(0.95); opacity: 0.9; }
 
 .grid-container { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; }
@@ -140,25 +139,33 @@ nav { position: fixed; top: 0; width: 100%; padding: 15px 5%; display: flex; jus
 .service-icon { width: 55px; height: 55px; border-radius: 50%; background: rgba(6, 182, 212, 0.1); color: var(--cyan); font-size: 1.5rem; display: flex; justify-content: center; align-items: center; margin-bottom: 12px; }
 .service-card h4 { font-size: 1.05rem; color: var(--putih); margin-bottom: 5px; line-height: 1.3; }
 
-/* KUNCI ANTI-MELAR KATALOG */
-.katalog-modal-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 15px; margin-top: 10px; align-items: start; align-content: start; }
-.katalog-item-card { background: var(--bg-dark); border: 1px solid var(--card-border); border-radius: 12px; overflow: hidden; display: block; width: 100%; }
-.katalog-img-box { position: relative; width: 100%; background: #000; overflow: hidden; transition: 0.2s; display: block; }
+/* KUNCI KATALOG (ANTI-MELAR & SESUAI RASIO 3:4 / 16:9) */
+.katalog-modal-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 15px; align-items: start; margin-top: 10px; }
+.katalog-item-card { background: var(--bg-dark); border: 1px solid var(--card-border); border-radius: 12px; overflow: hidden; display: flex; flex-direction: column; }
+.katalog-img-stok { aspect-ratio: 3 / 4 !important; }
+.katalog-img-topup { aspect-ratio: 16 / 9 !important; }
+.katalog-img-box { position: relative; width: 100%; background: #000; overflow: hidden; transition: 0.2s; }
 .katalog-img-box:hover { opacity: 0.9; }
-.katalog-img-box img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.katalog-img-box img { width: 100%; height: 100%; object-fit: contain; }
 .zoom-hint { position: absolute; bottom: 10px; right: 10px; background: rgba(0,0,0,0.6); color: white; padding: 6px 12px; border-radius: 20px; font-size: 0.8rem; pointer-events: none; border: 1px solid rgba(255,255,255,0.2); }
 .katalog-desc { padding: 15px; font-size: 0.9rem; color: var(--abu); line-height: 1.6; text-align: left; border-top: 1px solid var(--card-border); }
 .katalog-action { padding: 15px; display: flex; justify-content: center; border-top: 1px solid var(--card-border); }
 
-/* KUNCI ANTI-MELAR TESTIMONI (ASPECT RATIO 1:1 MUTLAK) */
+/* KUNCI TESTIMONI (KOTAK 1:1, KECUALI MODAL TOPUP) */
 .bento-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
 .box-title { font-size: 1.1rem; margin-bottom: 15px; display: flex; align-items: center; gap: 10px; color: var(--putih); }
 .box-padding { padding: 20px; }
 
-.testi-modal-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 15px; margin-top: 15px; align-items: start; align-content: start; }
 .testi-grid-preview { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; align-items: start; }
-.testi-item { width: 100%; border-radius: 8px; overflow: hidden; background: #000; display: block; }
-.testi-item img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.testi-modal-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 15px; align-items: start; margin-top: 15px; }
+
+/* Testi item Preview & Modal umum: Paksa 1:1 */
+.testi-item { width: 100%; aspect-ratio: 1 / 1 !important; border-radius: 8px; overflow: hidden; background: #000; position: relative; }
+.testi-item img { width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0; }
+
+/* KHUSUS Modal Topup (Biar Screenshot Panjangnya keliatan) */
+.testi-item-portrait { width: 100%; border-radius: 8px; overflow: hidden; background: #000; }
+.testi-item-portrait img { width: 100%; height: auto; display: block; object-fit: contain; }
 
 .btn-lihat-semua { width: 100%; padding: 12px; margin-top: 15px; border-radius: 8px; cursor: pointer; font-size: 0.95rem; font-weight: 600; background: var(--bg-dark); transition: 0.15s ease-out; }
 .cyan-glow { border: 1px solid rgba(6, 182, 212, 0.4); color: var(--cyan); }
