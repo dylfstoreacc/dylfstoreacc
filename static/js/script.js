@@ -84,6 +84,7 @@ function toggleTheme() {
     }
 }
 
+// PERBAIKAN TRANSLATE: Paksa ganti bahasa secara Direct DOM agar 100% Sat-Set
 function changeLang(googleCode, langText, btnElement, flagCode) {
     document.getElementById('currentFlag').src = `https://flagcdn.com/w20/${flagCode}.png`;
     document.getElementById('currentLang').innerText = langText;
@@ -91,12 +92,16 @@ function changeLang(googleCode, langText, btnElement, flagCode) {
     btns.forEach(btn => btn.classList.remove('active'));
     btnElement.classList.add('active');
     
-    function triggerTranslate() {
-        let selectField = document.querySelector(".goog-te-combo");
-        if (selectField) { selectField.value = googleCode; selectField.dispatchEvent(new Event("change")); }
+    let selectField = document.querySelector(".goog-te-combo");
+    if (selectField) { 
+        selectField.value = googleCode; 
+        selectField.dispatchEvent(new Event("change")); 
+    } else {
+        // Fallback Anti-Gagal jika script google telat dimuat
+        document.cookie = `googtrans=/id/${googleCode}; path=/`;
+        window.location.reload();
     }
-    triggerTranslate();
-    setTimeout(triggerTranslate, 500); 
+    
     closeModal('langModal');
 }
 
@@ -105,7 +110,6 @@ window.zoomImage = function(src) {
     openModal('imageZoomModal');
 }
 
-// LOGIKA CERDAS: Lacak dari angka 1 ke atas, lalu dibalik (Reverse) agar foto 100% lengkap & terbaru di atas.
 async function loadDataDynamic(previewId, fullId, folderName, isKatalog, waType, maxCheck) {
     const preview = previewId ? document.getElementById(previewId) : null;
     const full = document.getElementById(fullId);
@@ -124,25 +128,17 @@ async function loadDataDynamic(previewId, fullId, folderName, isKatalog, waType,
 
     while (consecutiveEmpty < 5 && i <= maxCheck) {
         let promises = [];
-        for (let j = 0; j < batchSize; j++) {
-            promises.push(checkImg(i + j));
-        }
-
+        for (let j = 0; j < batchSize; j++) { promises.push(checkImg(i + j)); }
         let results = await Promise.all(promises);
 
         for (let res of results) {
-            if (res) {
-                validItems.push(res);
-                consecutiveEmpty = 0;
-            } else {
-                consecutiveEmpty++;
-            }
+            if (res) { validItems.push(res); consecutiveEmpty = 0; } 
+            else { consecutiveEmpty++; }
         }
         if (consecutiveEmpty >= 5) break;
         i += batchSize;
     }
 
-    // BALIKKAN ARRAY (Foto terbaru auto di paling atas)
     validItems.reverse();
 
     function checkImg(id) {
@@ -201,8 +197,7 @@ async function loadDataDynamic(previewId, fullId, folderName, isKatalog, waType,
                     });
 
             } else {
-                // RASIO KUNCI 1:1 ANTI MELAR (Testimoni)
-                const testiHTML = `<div class="testi-item" style="aspect-ratio: 1/1; overflow: hidden;"><img src="${item.src}" loading="lazy" style="width:100%; height:100%; object-fit:cover; display:block;"></div>`;
+                const testiHTML = `<div class="testi-item"><img src="${item.src}" loading="lazy"></div>`;
                 fullHTML += testiHTML;
                 if (index < 4) previewHTML += testiHTML;
             }
@@ -213,18 +208,18 @@ async function loadDataDynamic(previewId, fullId, folderName, isKatalog, waType,
     if (preview && !isKatalog) preview.innerHTML = previewHTML;
 }
 
-// LOGIKA POPUP SUPER ENTENG (Ganti Display dengan Classlist Show)
+// PERBAIKAN POP-UP: KEMBALI KE SISTEM DISPLAY FLEX YANG BEBAS LAG DAN STABIL
 function openModal(id) { 
-    document.getElementById(id).classList.add('show'); 
+    document.getElementById(id).style.display = 'flex'; 
 }
 function closeModal(id) { 
-    document.getElementById(id).classList.remove('show'); 
+    document.getElementById(id).style.display = 'none'; 
 }
 
 window.onclick = function(event) {
     const modals = document.querySelectorAll('.modal-overlay');
     modals.forEach(modal => {
-        if (event.target === modal) { modal.classList.remove('show'); }
+        if (event.target === modal) { modal.style.display = "none"; }
     });
 }
 
