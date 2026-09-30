@@ -106,7 +106,7 @@ window.zoomImage = function(src) {
     openModal('imageZoomModal');
 }
 
-// SISTEM SMART SCANNER PROGRESSIVE (STREAMING INSTAN & CEPAT)
+// SISTEM SMART SCANNER (Mempertahankan Animasi Loading Berputar Selama Proses)
 async function loadDataStreamProgressive(previewId, fullId, folderName, isKatalog, waType) {
     const preview = document.getElementById(previewId);
     const full = document.getElementById(fullId);
@@ -115,15 +115,21 @@ async function loadDataStreamProgressive(previewId, fullId, folderName, isKatalo
     if (full) full.innerHTML = '';
 
     let foundAny = false;
-    let batchSize = 5; // Cek 5 gambar sekejap mata
+    let batchSize = 5; 
+    let maxCheck = isKatalog ? 100 : 300;
     
-    // Skeleton Spinner yang akan tergantikan
-    let loadingHintId = `loading-${folderName}`;
-    if (full) {
-        full.insertAdjacentHTML('beforeend', `<div id="${loadingHintId}" style="grid-column: 1/-1; text-align: center; padding: 20px;"><i class="fa-solid fa-spinner fa-spin text-cyan"></i> <span class="text-muted" style="font-size:0.85rem;">Memindai data...</span></div>`);
-    }
+    // MENANAMKAN LOADING SPINNER BERPUTAR
+    let loadingId = `spinner-${folderName}-${Date.now()}`;
+    let spinnerHTML = `
+        <div id="${loadingId}" style="grid-column: 1/-1; text-align: center; padding: 20px;">
+            <i class="fa-solid fa-spinner fa-spin text-cyan" style="font-size: 2rem;"></i>
+            <p class="text-muted" style="margin-top: 10px; font-size: 0.85rem;">Memuat Data...</p>
+        </div>`;
+    
+    if (full) full.insertAdjacentHTML('beforeend', spinnerHTML);
+    if (preview && !isKatalog) preview.insertAdjacentHTML('beforeend', `<div id="prev-${loadingId}" style="grid-column: 1/-1; text-align: center; padding: 20px;"><i class="fa-solid fa-spinner fa-spin text-cyan" style="font-size: 1.5rem;"></i></div>`);
 
-    for (let i = 1; i <= 300; i += batchSize) {
+    for (let i = 1; i <= maxCheck; i += batchSize) {
         let promises = [];
         for (let j = i; j < i + batchSize; j++) { promises.push(checkImg(j)); }
 
@@ -133,18 +139,20 @@ async function loadDataStreamProgressive(previewId, fullId, folderName, isKatalo
         for (let res of results) {
             if (res) {
                 foundAny = true;
-                insertToDOM(res); // Gambar LANGSUNG dimunculkan di layar! (Streaming)
+                insertToDOM(res, loadingId); 
             } else {
                 emptyInBatch++;
             }
         }
 
-        // Jika ada 5 nomor kosong berturut-turut, mesin otomatis berhenti bekerja.
         if (emptyInBatch === batchSize) break;
     }
 
-    let hintEl = document.getElementById(loadingHintId);
-    if (hintEl) hintEl.remove();
+    // HAPUS LOADING SPINNER SETELAH PENCARIAN SELESAI
+    let spFull = document.getElementById(loadingId);
+    if (spFull) spFull.remove();
+    let spPrev = document.getElementById(`prev-${loadingId}`);
+    if (spPrev) spPrev.remove();
 
     if (!foundAny) renderEmptyState();
 
@@ -162,14 +170,13 @@ async function loadDataStreamProgressive(previewId, fullId, folderName, isKatalo
         });
     }
 
-    function insertToDOM(item) {
+    function insertToDOM(item, loadId) {
         if (isKatalog) {
             const msg = encodeURIComponent(`Halo Admin Dileppp, saya tertarik dengan [${waType}] yang ada di Katalog Web (Gambar No. ${item.id}). Apakah masih tersedia?`);
             const cardId = `katalog-card-${folderName}-${item.id}`;
             const imgRatio = folderName === 'stok' ? 'aspect-ratio: 3/4;' : 'aspect-ratio: 16/9;';
 
-            let tempDiv = document.createElement('div');
-            tempDiv.innerHTML = `
+            let itemHTML = `
             <div class="katalog-item-card reveal active">
                 <div class="katalog-img-box" onclick="zoomImage('${item.src}')" style="cursor: zoom-in; ${imgRatio}" title="Klik untuk perbesar">
                     <img src="${item.src}" loading="lazy">
@@ -183,10 +190,12 @@ async function loadDataStreamProgressive(previewId, fullId, folderName, isKatalo
                 </div>
             </div>`;
             
-            // Susun dari yang terbaru di paling atas
-            if(full) full.prepend(tempDiv.firstElementChild);
+            // Susun gambar persis sebelum ikon Spinner agar Spinner selalu ada di bawah
+            if(full) {
+                let spinnerNode = document.getElementById(loadId);
+                if(spinnerNode) spinnerNode.insertAdjacentHTML('beforebegin', itemHTML);
+            }
 
-            // Fetch deskripsi produk .txt
             fetch(`static/img/katalog/${folderName}/${item.id}.txt`)
                 .then(res => { if(res.ok) return res.text(); throw new Error('No desc'); })
                 .then(text => {
@@ -200,17 +209,19 @@ async function loadDataStreamProgressive(previewId, fullId, folderName, isKatalo
                 });
 
         } else {
-            let tempFull = document.createElement('div');
-            tempFull.innerHTML = `<div class="testi-item reveal active"><img src="${item.src}" loading="lazy"></div>`;
-            if(full) full.prepend(tempFull.firstElementChild);
+            let testiHTML = `<div class="testi-item reveal active"><img src="${item.src}" loading="lazy"></div>`;
+            
+            if(full) {
+                let spinnerNode = document.getElementById(loadId);
+                if(spinnerNode) spinnerNode.insertAdjacentHTML('beforebegin', testiHTML);
+            }
 
             if(preview && !isKatalog) {
-                let tempPrev = document.createElement('div');
-                tempPrev.innerHTML = `<div class="testi-item reveal active"><img src="${item.src}" loading="lazy"></div>`;
-                preview.prepend(tempPrev.firstElementChild);
-                // Hanya sisakan 4 foto di menu beranda
-                if (preview.children.length > 4) {
-                    preview.removeChild(preview.lastElementChild);
+                // Tampilkan hanya 4 item di Beranda
+                let currentItems = preview.querySelectorAll('.testi-item').length;
+                if (currentItems < 4) {
+                    let spinnerNodePrev = document.getElementById(`prev-${loadId}`);
+                    if(spinnerNodePrev) spinnerNodePrev.insertAdjacentHTML('beforebegin', testiHTML);
                 }
             }
         }
