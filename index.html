@@ -11,8 +11,10 @@
 </head>
 <body>
 
-    <div id="google_translate_element" style="display:none;"></div>
+    <!-- Mesin Penerjemah (Diubah posisinya agar tidak error oleh Google) -->
+    <div id="google_translate_element" style="position: absolute; top: -9999px; left: -9999px; opacity: 0; pointer-events: none;"></div>
 
+    <!-- PRELOADER ANIMASI -->
     <div id="preloader">
         <div class="welcome-text" id="welcomeText"></div>
     </div>
@@ -63,7 +65,7 @@
         </div>
     </div>
 
-    <!-- MODAL ZOOM GAMBAR -->
+    <!-- MODAL ZOOM GAMBAR KATALOG -->
     <div id="imageZoomModal" class="modal-overlay" style="z-index: 3000;">
         <span class="close-btn" onclick="closeModal('imageZoomModal')" style="color: #fff; top: 20px; right: 30px; font-size: 2.5rem; text-shadow: 0 2px 10px rgba(0,0,0,0.8);">&times;</span>
         <img id="zoomedImageSrc" src="" style="max-width: 95%; max-height: 85vh; border-radius: 12px; object-fit: contain; box-shadow: 0 10px 40px rgba(0,0,0,0.8);">
@@ -73,28 +75,28 @@
         <i class="fa-brands fa-whatsapp"></i>
     </a>
 
-    <!-- MODAL ABOUT STORE (DIRAMPINGKAN & BISA SCROLL) -->
+    <!-- MODAL ABOUT STORE (DIKEMBALIKAN UTUH & DETAIL) -->
     <div id="aboutStoreModal" class="modal-overlay">
-        <div class="modal-content glass-card about-modal-box">
+        <div class="modal-content glass-card about-modal-box" style="max-width: 650px;">
             <span class="close-btn" onclick="closeModal('aboutStoreModal')">&times;</span>
-            <h2 class="section-title" style="font-size: 1.8rem; margin-bottom: 10px;">About <br><span class="text-gradient-navy">DYLF STOREacc</span></h2>
+            <h2 class="section-title" style="font-size: 2rem; margin-bottom: 10px;">About <br><span class="text-gradient-navy">DYLF STOREacc</span></h2>
             
-            <p class="text-muted" style="margin-bottom: 15px; font-size: 0.9rem; line-height: 1.5; text-align: left;">
-                Platform layanan digital terpadu bagi gamers & pengguna internet, mengedepankan keamanan dan transparansi.
+            <p class="text-muted" style="margin-bottom: 15px; font-size: 0.95rem; line-height: 1.6; text-align: left;">
+                Website <strong>DYLF STOREacc</strong> adalah sebuah platform layanan transaksi digital terpadu yang dirancang khusus untuk memfasilitasi berbagai kebutuhan gamers dan pengguna internet dengan mengedepankan keamanan serta transparansi penuh.
             </p>
             
             <div class="about-list-box" style="margin-bottom: 15px; text-align: left; padding: 15px;">
-                <p style="margin-bottom: 10px; font-weight: 600; color: var(--putih);"><i class="fa-solid fa-list-check text-cyan"></i> 4 Layanan Utama:</p>
-                <ul style="color: var(--abu); font-size: 0.85rem; padding-left: 20px; line-height: 1.5;">
-                    <li style="margin-bottom: 6px;"><strong style="color: var(--putih);">Jual Beli Akun:</strong> Transaksi aman akun game & sosmed.</li>
-                    <li style="margin-bottom: 6px;"><strong style="color: var(--putih);">Rekber & MC:</strong> Perantara anti-scam amankan dana.</li>
-                    <li style="margin-bottom: 6px;"><strong style="color: var(--putih);">Topup Item:</strong> Pengisian in-game (Diamond MLBB).</li>
-                    <li><strong style="color: var(--putih);">Convert Saldo:</strong> Pencairan pulsa, e-wallet, bank & valas.</li>
+                <p style="margin-bottom: 10px; font-weight: 600; color: var(--putih);"><i class="fa-solid fa-list-check text-cyan"></i> Platform ini menawarkan empat layanan utama:</p>
+                <ul style="color: var(--abu); font-size: 0.9rem; padding-left: 20px; line-height: 1.6;">
+                    <li style="margin-bottom: 8px;"><strong style="color: var(--putih);">Jual Beli Akun Digital:</strong> Wadah penyediaan dan transaksi aman untuk berbagai akun game maupun media sosial.</li>
+                    <li style="margin-bottom: 8px;"><strong style="color: var(--putih);">Jasa Rekber & Middleman (MC):</strong> Layanan perantara pihak ketiga untuk mengamankan dana pembeli dan mencegah segala bentuk penipuan (scam) selama proses jual beli.</li>
+                    <li style="margin-bottom: 8px;"><strong style="color: var(--putih);">Jasa Topup Item:</strong> Pengisian kebutuhan mata uang in-game, seperti Diamond pada game MLBB.</li>
+                    <li><strong style="color: var(--putih);">Jasa Convert Saldo:</strong> Layanan penukaran atau pencairan saldo dengan rate bersahabat dari pulsa, e-wallet, bank, hingga valuta asing.</li>
                 </ul>
             </div>
             
-            <p class="text-muted" style="font-size: 0.85rem; line-height: 1.5; text-align: left; padding-bottom: 10px;">
-                Seluruh transaksi diawasi real-time oleh admin <strong>(Dileppp)</strong> untuk memastikan 100% keamanan.
+            <p class="text-muted" style="font-size: 0.9rem; line-height: 1.6; text-align: left; padding-bottom: 10px;">
+                Untuk memastikan 100% keamanan dan kelancaran, seluruh proses transaksi di ekosistem ini tidak dilepas begitu saja, melainkan diproses secara real-time dan ditangani langsung oleh admin penanggung jawabnya <strong>(Dileppp)</strong>. Melalui website ini, pengunjung dapat mengecek katalog layanan, memvalidasi ribuan bukti testimoni, serta langsung terhubung ke WhatsApp admin untuk melakukan transaksi dengan nyaman dan tepercaya.
             </p>
         </div>
     </div>
@@ -161,7 +163,7 @@
         </div>
     </div>
 
-    <!-- MODAL TESTIMONI (FULL) -->
+    <!-- MODAL TESTIMONI (FULL SCROLL) -->
     <div id="modalTestiStok" class="modal-overlay">
         <div class="modal-content glass-card modal-large">
             <span class="close-btn" onclick="closeModal('modalTestiStok')">&times;</span>
@@ -191,6 +193,7 @@
         </div>
     </div>
 
+    <!-- KONTEN UTAMA -->
     <main class="dashboard-layout" id="dashboard">
         <div class="glass-card hero-bento reveal" id="home">
             <div class="badge-innovate"><i class="fa-solid fa-fire text-cyan"></i> Populer Sekarang!</div>
