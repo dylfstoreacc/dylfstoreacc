@@ -44,7 +44,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     new Swiper('.hero-carousel-container', { effect: 'fade', speed: 800, autoplay: { delay: 3000, disableOnInteraction: false }, pagination: { el: '.swiper-pagination', clickable: true }, loop: true });
 
-    // SYSTEM PROGRESSIVE STREAMING (Muncul seketika tanpa menunda render)
     setTimeout(() => {
         loadDataStreamProgressive('preview-testi-stok', 'full-testi-stok', 'stok', false, '');
         loadDataStreamProgressive('preview-testi-rekber', 'full-testi-rekber', 'rekber', false, '');
@@ -85,6 +84,7 @@ function toggleTheme() {
     }
 }
 
+// PERBAIKAN TRANSLATE (Pasti Merespon)
 function changeLang(googleCode, langText, btnElement, flagCode) {
     document.getElementById('currentFlag').src = `https://flagcdn.com/w20/${flagCode}.png`;
     document.getElementById('currentLang').innerText = langText;
@@ -92,12 +92,18 @@ function changeLang(googleCode, langText, btnElement, flagCode) {
     btns.forEach(btn => btn.classList.remove('active'));
     btnElement.classList.add('active');
     
+    let retryCount = 0;
     function triggerTranslate() {
         let selectField = document.querySelector(".goog-te-combo");
-        if (selectField) { selectField.value = googleCode; selectField.dispatchEvent(new Event("change")); }
+        if (selectField) { 
+            selectField.value = googleCode; 
+            selectField.dispatchEvent(new Event("change")); 
+        } else if (retryCount < 10) {
+            retryCount++;
+            setTimeout(triggerTranslate, 500);
+        }
     }
     triggerTranslate();
-    setTimeout(triggerTranslate, 500); 
     closeModal('langModal');
 }
 
@@ -106,7 +112,7 @@ window.zoomImage = function(src) {
     openModal('imageZoomModal');
 }
 
-// SISTEM SMART SCANNER (Mempertahankan Animasi Loading Berputar Selama Proses)
+// SISTEM SMART SCANNER PROGRESSIVE (MEMPERTAHANKAN ANIMASI SPINNER BERPUTAR)
 async function loadDataStreamProgressive(previewId, fullId, folderName, isKatalog, waType) {
     const preview = document.getElementById(previewId);
     const full = document.getElementById(fullId);
@@ -118,7 +124,6 @@ async function loadDataStreamProgressive(previewId, fullId, folderName, isKatalo
     let batchSize = 5; 
     let maxCheck = isKatalog ? 100 : 300;
     
-    // MENANAMKAN LOADING SPINNER BERPUTAR
     let loadingId = `spinner-${folderName}-${Date.now()}`;
     let spinnerHTML = `
         <div id="${loadingId}" style="grid-column: 1/-1; text-align: center; padding: 20px;">
@@ -148,7 +153,6 @@ async function loadDataStreamProgressive(previewId, fullId, folderName, isKatalo
         if (emptyInBatch === batchSize) break;
     }
 
-    // HAPUS LOADING SPINNER SETELAH PENCARIAN SELESAI
     let spFull = document.getElementById(loadingId);
     if (spFull) spFull.remove();
     let spPrev = document.getElementById(`prev-${loadingId}`);
@@ -190,7 +194,6 @@ async function loadDataStreamProgressive(previewId, fullId, folderName, isKatalo
                 </div>
             </div>`;
             
-            // Susun gambar persis sebelum ikon Spinner agar Spinner selalu ada di bawah
             if(full) {
                 let spinnerNode = document.getElementById(loadId);
                 if(spinnerNode) spinnerNode.insertAdjacentHTML('beforebegin', itemHTML);
@@ -217,7 +220,6 @@ async function loadDataStreamProgressive(previewId, fullId, folderName, isKatalo
             }
 
             if(preview && !isKatalog) {
-                // Tampilkan hanya 4 item di Beranda
                 let currentItems = preview.querySelectorAll('.testi-item').length;
                 if (currentItems < 4) {
                     let spinnerNodePrev = document.getElementById(`prev-${loadId}`);
