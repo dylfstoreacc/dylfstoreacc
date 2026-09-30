@@ -44,7 +44,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     new Swiper('.hero-carousel-container', { speed: 800, autoplay: { delay: 3000, disableOnInteraction: false }, pagination: { el: '.swiper-pagination', clickable: true }, loop: true });
 
-    // Mulai penarikan data secara rapi (Max Check Limit Dinaikkan ke 300 untuk menampung file di masa depan)
     setTimeout(() => {
         loadDataDynamic('preview-testi-stok', 'full-testi-stok', 'stok', false, '', 300);
         loadDataDynamic('preview-testi-rekber', 'full-testi-rekber', 'rekber', false, '', 300);
@@ -106,7 +105,7 @@ window.zoomImage = function(src) {
     openModal('imageZoomModal');
 }
 
-// FUNGSI UTAMA PENARIKAN DATA: MENCARI DARI ANGKA 1 NAIK KE ATAS (Anti Kepotong)
+// LOGIKA CERDAS: Lacak dari angka 1 ke atas, lalu dibalik (Reverse) agar foto 100% lengkap & terbaru di atas.
 async function loadDataDynamic(previewId, fullId, folderName, isKatalog, waType, maxCheck) {
     const preview = previewId ? document.getElementById(previewId) : null;
     const full = document.getElementById(fullId);
@@ -123,7 +122,6 @@ async function loadDataDynamic(previewId, fullId, folderName, isKatalog, waType,
     const batchSize = 10;
     let i = 1;
 
-    // Loop mencari dari angka 1 terus ke atas sampai ketemu 5 angka kosong beruntun
     while (consecutiveEmpty < 5 && i <= maxCheck) {
         let promises = [];
         for (let j = 0; j < batchSize; j++) {
@@ -144,7 +142,7 @@ async function loadDataDynamic(previewId, fullId, folderName, isKatalog, waType,
         i += batchSize;
     }
 
-    // BALIKKAN ARRAY AGAR GAMBAR TERBARU (ANGKA TERBESAR) MUNCUL PALING ATAS!
+    // BALIKKAN ARRAY (Foto terbaru auto di paling atas)
     validItems.reverse();
 
     function checkImg(id) {
@@ -174,16 +172,14 @@ async function loadDataDynamic(previewId, fullId, folderName, isKatalog, waType,
     } else {
         validItems.forEach((item, index) => {
             if (isKatalog) {
-                // ATURAN RASIO GAMBAR KATALOG: Stok Akun = 3:4 (Potrait), Topup = 16:9 (Landscape)
                 const ratioStyle = (folderName === 'stok') ? 'aspect-ratio: 3/4;' : 'aspect-ratio: 16/9;';
-                
                 const msg = encodeURIComponent(`Halo Admin Dileppp, saya tertarik dengan [${waType}] yang ada di Katalog Web (Gambar No. ${item.id}). Apakah masih tersedia?`);
                 const cardId = `katalog-card-${folderName}-${item.id}`;
                 
                 fullHTML += `
                 <div class="katalog-item-card">
                     <div class="katalog-img-box" onclick="zoomImage('${item.src}')" style="cursor: zoom-in; ${ratioStyle}" title="Klik untuk perbesar">
-                        <img src="${item.src}" loading="lazy" style="width:100%; height:100%; object-fit:cover;">
+                        <img src="${item.src}" loading="lazy" style="width:100%; height:100%; object-fit:cover; display:block;">
                         <div class="zoom-hint"><i class="fa-solid fa-magnifying-glass-plus"></i></div>
                     </div>
                     <div class="katalog-desc" id="${cardId}-desc">
@@ -194,7 +190,6 @@ async function loadDataDynamic(previewId, fullId, folderName, isKatalog, waType,
                     </div>
                 </div>`;
                 
-                // Fetch File .TXT Untuk Penjelasan dan Harga
                 fetch(`static/img/katalog/${folderName}/${item.id}.txt`)
                     .then(res => { if(res.ok) return res.text(); throw new Error('No desc'); })
                     .then(text => {
@@ -206,10 +201,9 @@ async function loadDataDynamic(previewId, fullId, folderName, isKatalog, waType,
                     });
 
             } else {
-                // ATURAN GAMBAR TESTIMONI: SELALU KOTAK (1:1)
-                const testiHTML = `<div class="testi-item" style="aspect-ratio: 1;"><img src="${item.src}" loading="lazy" style="width:100%; height:100%; object-fit:cover;"></div>`;
+                // RASIO KUNCI 1:1 ANTI MELAR (Testimoni)
+                const testiHTML = `<div class="testi-item" style="aspect-ratio: 1/1; overflow: hidden;"><img src="${item.src}" loading="lazy" style="width:100%; height:100%; object-fit:cover; display:block;"></div>`;
                 fullHTML += testiHTML;
-                // Hanya memunculkan 4 foto paling atas (terbaru) di Beranda Web
                 if (index < 4) previewHTML += testiHTML;
             }
         });
@@ -219,13 +213,18 @@ async function loadDataDynamic(previewId, fullId, folderName, isKatalog, waType,
     if (preview && !isKatalog) preview.innerHTML = previewHTML;
 }
 
-function openModal(id) { document.getElementById(id).style.display = 'flex'; }
-function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+// LOGIKA POPUP SUPER ENTENG (Ganti Display dengan Classlist Show)
+function openModal(id) { 
+    document.getElementById(id).classList.add('show'); 
+}
+function closeModal(id) { 
+    document.getElementById(id).classList.remove('show'); 
+}
 
 window.onclick = function(event) {
     const modals = document.querySelectorAll('.modal-overlay');
     modals.forEach(modal => {
-        if (event.target === modal) { modal.style.display = "none"; }
+        if (event.target === modal) { modal.classList.remove('show'); }
     });
 }
 
