@@ -11,7 +11,6 @@
 </head>
 <body>
 
-    <!-- Mesin Penerjemah Tersembunyi -->
     <div id="google_translate_element" style="display:none;"></div>
 
     <!-- PRELOADER ANIMASI -->
@@ -19,7 +18,7 @@
         <div class="welcome-text" id="welcomeText"></div>
     </div>
 
-    <!-- NAVBAR APP STYLE -->
+    <!-- NAVBAR -->
     <nav id="navbar">
         <a href="#home" class="logo">
             <img src="static/img/produk/watermark_logo.png" alt="DYLF STOREacc" class="watermark-logo" onerror="this.src='https://via.placeholder.com/200x50/020617/06B6D4?text=DYLF+STORE'">
@@ -56,11 +55,13 @@
     <div id="langModal" class="modal-overlay">
         <div class="modal-content glass-card" style="max-width: 350px;">
             <span class="close-btn" onclick="closeModal('langModal')">&times;</span>
-            <h2 class="section-title" style="font-size: 1.5rem; margin-bottom: 20px;">Pilih <span class="text-cyan">Bahasa</span></h2>
-            <div class="lang-options">
-                <button class="lang-btn active" onclick="changeLang('id', 'ID', this, 'id')"><img src="https://flagcdn.com/w20/id.png"> Indonesia (ID)</button>
-                <button class="lang-btn" onclick="changeLang('en', 'EN', this, 'sg')"><img src="https://flagcdn.com/w20/sg.png"> English / Singapore (EN)</button>
-                <button class="lang-btn" onclick="changeLang('ms', 'MS', this, 'my')"><img src="https://flagcdn.com/w20/my.png"> Melayu (MS)</button>
+            <div class="modal-text-content">
+                <h2 class="section-title" style="font-size: 1.5rem; margin-bottom: 20px;">Pilih <span class="text-cyan">Bahasa</span></h2>
+                <div class="lang-options">
+                    <button class="lang-btn active" onclick="changeLang('id', 'ID', this, 'id')"><img src="https://flagcdn.com/w20/id.png"> Indonesia (ID)</button>
+                    <button class="lang-btn" onclick="changeLang('en', 'EN', this, 'sg')"><img src="https://flagcdn.com/w20/sg.png"> English / Singapore (EN)</button>
+                    <button class="lang-btn" onclick="changeLang('ms', 'MS', this, 'my')"><img src="https://flagcdn.com/w20/my.png"> Melayu (MS)</button>
+                </div>
             </div>
         </div>
     </div>
@@ -71,7 +72,6 @@
         <img id="zoomedImageSrc" src="" style="max-width: 95%; max-height: 85vh; border-radius: 12px; object-fit: contain; box-shadow: 0 10px 40px rgba(0,0,0,0.8);">
     </div>
 
-    <!-- FLOATING WA BUTTON -->
     <a href="https://wa.me/6285266953530" class="floating-wa" target="_blank">
         <i class="fa-brands fa-whatsapp"></i>
     </a>
@@ -80,18 +80,66 @@
     <div id="aboutStoreModal" class="modal-overlay">
         <div class="modal-content glass-card">
             <span class="close-btn" onclick="closeModal('aboutStoreModal')">&times;</span>
-            <h2 class="section-title" style="font-size: 2rem;">About <br><span class="text-gradient-navy">DYLF STOREacc</span></h2>
-            <p class="text-muted" style="margin-bottom: 15px; font-size: 0.95rem; line-height: 1.6;">DYLF STOREacc bukan sekadar platform transaksi, melainkan wadah interaksi terpercaya bagi para gamers dan pengguna digital.</p>
-            <div class="about-list-box">
-                <p style="margin-bottom: 5px; font-weight: 600;"><i class="fa-solid fa-list-check text-cyan"></i> Layanan Ekosistem Kami:</p>
-                <ul>
-                    <li>Jual Beli Akun Digital (Game, Sosmed, dll)</li>
-                    <li>Jasa Keamanan Transaksi (Rekber / MC)</li>
-                    <li>Jasa Topup Item MLBB (Diamond, Charisma)</li>
-                    <li>Jasa Convert Saldo (E-Wallet, Pulsa, Valas)</li>
-                </ul>
+            <div class="modal-text-content">
+                <h2 class="section-title" style="font-size: 2rem;">About <br><span class="text-gradient-navy">DYLF STOREacc</span></h2>
+                <p class="text-muted" style="margin-bottom: 15px; font-size: 0.95rem; line-height: 1.6;">DYLF STOREacc bukan sekadar platform transaksi, melainkan wadah interaksi terpercaya bagi para gamers dan pengguna digital.</p>
+                <div class="about-list-box">
+                    <p style="margin-bottom: 5px; font-weight: 600;"><i class="fa-solid fa-list-check text-cyan"></i> Layanan Ekosistem Kami:</p>
+                    <ul>
+                        <li>Jual Beli Akun Digital (Game, Sosmed, dll)</li>
+                        <li>Jasa Keamanan Transaksi (Rekber / MC)</li>
+                        <li>Jasa Topup Item MLBB (Diamond, Charisma)</li>
+                        <li>Jasa Convert Saldo (E-Wallet, Pulsa, Valas)</li>
+                    </ul>
+                </div>
+                <p class="text-muted" style="font-size: 0.85rem; line-height: 1.5;">Kami memastikan setiap proses jual-beli berjalan transparan, cepat, dan 100% aman di bawah pengawasan langsung dari admin Dileppp.</p>
             </div>
-            <p class="text-muted" style="font-size: 0.85rem; line-height: 1.5;">Kami memastikan setiap proses jual-beli berjalan transparan, cepat, dan 100% aman di bawah pengawasan langsung dari admin Dileppp.</p>
+        </div>
+    </div>
+
+    <!-- MODAL INFO REKBER -->
+    <div id="modalInfoRekber" class="modal-overlay">
+        <div class="modal-content glass-card">
+            <span class="close-btn" onclick="closeModal('modalInfoRekber')">&times;</span>
+            <div class="modal-text-content">
+                <h3 class="box-title" style="justify-content: center; margin-bottom: 20px; font-size: 1.5rem;"><i class="fa-solid fa-shield-halved text-purple"></i> Jasa Rekber & MC</h3>
+                <div style="text-align: left; color: var(--putih); font-size: 0.95rem; line-height: 1.6;">
+                    <p style="margin-bottom: 15px;"><strong>Apa itu Rekber / Middleman?</strong><br>Layanan pihak ketiga yang bertugas mengamankan dana dan data selama proses transaksi jual beli akun dari potensi penipuan (*scammer*).</p>
+                    <div style="margin-bottom: 15px; padding: 15px; background: rgba(139, 92, 246, 0.1); border-left: 4px solid var(--ungu-neon); border-radius: 8px;">
+                        <strong style="color: var(--ungu-neon);">Analogi Cara Kerja:</strong><br>
+                        <ol style="margin-left: 20px; margin-top: 5px; color: var(--abu);">
+                            <li><strong>Pembeli</strong> mentransfer dana ke rekening <strong>Admin DYLF</strong>.</li>
+                            <li><strong>Penjual</strong> menyerahkan data akun kepada <strong>Pembeli</strong>.</li>
+                            <li><strong>Pembeli</strong> mengecek kesesuaian dan mengamankan akun tersebut.</li>
+                            <li>Jika akun sudah 100% aman, <strong>Admin</strong> baru akan meneruskan dana ke <strong>Penjual</strong>. Selesai!</li>
+                        </ol>
+                    </div>
+                    <p class="text-muted" style="font-size: 0.85rem; text-align: center;">Jika transaksi batal/bermasalah, dana 100% aman dan dikembalikan utuh ke Pembeli.</p>
+                </div>
+                <a href="https://wa.me/6285266953530?text=Halo%20Admin%20Dileppp,%20saya%20ingin%20menggunakan%20jasa%20Rekber%20/%20Middleman." target="_blank" class="btn-gradient-navy" style="width: 100%; margin-top: 20px;"><i class="fa-brands fa-whatsapp"></i> Gunakan Jasa Rekber Sekarang</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL INFO CONVERT -->
+    <div id="modalInfoConvert" class="modal-overlay">
+        <div class="modal-content glass-card">
+            <span class="close-btn" onclick="closeModal('modalInfoConvert')">&times;</span>
+            <div class="modal-text-content">
+                <h3 class="box-title" style="justify-content: center; margin-bottom: 20px; font-size: 1.5rem;"><i class="fa-solid fa-wallet text-cyan"></i> Jasa Convert Saldo</h3>
+                <div style="text-align: left; color: var(--putih); font-size: 0.95rem; line-height: 1.6;">
+                    <p style="margin-bottom: 15px;">Punya saldo mengendap di suatu platform namun butuh uang tunai atau pindah ke platform lain? Kami solusinya!</p>
+                    <ul style="margin-bottom: 15px; padding-left: 20px; color: var(--abu);">
+                        <li>Convert Saldo Pulsa dan Paketan</li>
+                        <li>Tukar Saldo antar E-Wallet dan Bank</li>
+                        <li>Valas atau Convert Mata Uang Luar Negeri</li>
+                    </ul>
+                    <p style="padding: 12px; background: rgba(6, 182, 212, 0.1); border: 1px dashed var(--cyan); border-radius: 8px; text-align: center; font-weight: 600; color: var(--cyan);">
+                        Rate sangat bersahabat, proses hitungan menit, dan dijamin 100% tepercaya!
+                    </p>
+                </div>
+                <a href="https://wa.me/6285266953530?text=Halo%20Admin%20Dileppp,%20saya%20ingin%20menggunakan%20jasa%20Convert%20Saldo." target="_blank" class="btn-primary" style="width: 100%; margin-top: 20px;"><i class="fa-brands fa-whatsapp"></i> Hubungi Admin Convert</a>
+            </div>
         </div>
     </div>
 
@@ -99,8 +147,10 @@
     <div id="modalKatalogStok" class="modal-overlay">
         <div class="modal-content glass-card modal-large">
             <span class="close-btn" onclick="closeModal('modalKatalogStok')">&times;</span>
-            <h3 class="box-title" style="justify-content: center; margin-bottom: 5px;"><i class="fa-solid fa-cart-shopping text-cyan"></i> Katalog Stok Akun</h3>
-            <p class="text-muted" style="font-size: 0.85rem; text-align: center; margin-bottom: 20px;">Klik foto untuk perbesar. Cek spesifikasi dan tanyakan admin!</p>
+            <div class="modal-header">
+                <h3 class="box-title" style="justify-content: center; margin-bottom: 5px;"><i class="fa-solid fa-cart-shopping text-cyan"></i> Katalog Stok Akun</h3>
+                <p class="text-muted" style="font-size: 0.85rem; text-align: center; margin-bottom: 10px;">Klik foto untuk perbesar. Cek spesifikasi dan tanyakan admin!</p>
+            </div>
             <div class="katalog-modal-grid" id="katalog-stok-grid"></div>
         </div>
     </div>
@@ -109,51 +159,11 @@
     <div id="modalKatalogTopup" class="modal-overlay">
         <div class="modal-content glass-card modal-large">
             <span class="close-btn" onclick="closeModal('modalKatalogTopup')">&times;</span>
-            <h3 class="box-title" style="justify-content: center; margin-bottom: 5px;"><i class="fa-solid fa-gem text-cyan"></i> Katalog Topup Item</h3>
-            <p class="text-muted" style="font-size: 0.85rem; text-align: center; margin-bottom: 20px;">Klik foto pricelist untuk perbesar.</p>
+            <div class="modal-header">
+                <h3 class="box-title" style="justify-content: center; margin-bottom: 5px;"><i class="fa-solid fa-gem text-cyan"></i> Katalog Topup Item</h3>
+                <p class="text-muted" style="font-size: 0.85rem; text-align: center; margin-bottom: 10px;">Klik foto pricelist untuk perbesar.</p>
+            </div>
             <div class="katalog-modal-grid" id="katalog-topup-grid"></div>
-        </div>
-    </div>
-
-    <!-- MODAL INFO REKBER -->
-    <div id="modalInfoRekber" class="modal-overlay">
-        <div class="modal-content glass-card">
-            <span class="close-btn" onclick="closeModal('modalInfoRekber')">&times;</span>
-            <h3 class="box-title" style="justify-content: center; margin-bottom: 20px; font-size: 1.5rem;"><i class="fa-solid fa-shield-halved text-purple"></i> Jasa Rekber & MC</h3>
-            <div style="text-align: left; color: var(--putih); font-size: 0.95rem; line-height: 1.6;">
-                <p style="margin-bottom: 15px;"><strong>Apa itu Rekber / Middleman?</strong><br>Layanan pihak ketiga yang bertugas mengamankan dana dan data selama proses transaksi jual beli akun dari potensi penipuan (*scammer*).</p>
-                <div style="margin-bottom: 15px; padding: 15px; background: rgba(139, 92, 246, 0.1); border-left: 4px solid var(--ungu-neon); border-radius: 8px;">
-                    <strong style="color: var(--ungu-neon);">Analogi Cara Kerja:</strong><br>
-                    <ol style="margin-left: 20px; margin-top: 5px; color: var(--abu);">
-                        <li><strong>Pembeli</strong> mentransfer dana ke rekening <strong>Admin DYLF</strong>.</li>
-                        <li><strong>Penjual</strong> menyerahkan data akun kepada <strong>Pembeli</strong>.</li>
-                        <li><strong>Pembeli</strong> mengecek kesesuaian dan mengamankan akun tersebut.</li>
-                        <li>Jika akun sudah 100% aman, <strong>Admin</strong> baru akan meneruskan dana ke <strong>Penjual</strong>. Selesai!</li>
-                    </ol>
-                </div>
-                <p class="text-muted" style="font-size: 0.85rem; text-align: center;">Jika transaksi batal/bermasalah, dana 100% aman dan dikembalikan utuh ke Pembeli.</p>
-            </div>
-            <a href="https://wa.me/6285266953530?text=Halo%20Admin%20Dileppp,%20saya%20ingin%20menggunakan%20jasa%20Rekber%20/%20Middleman." target="_blank" class="btn-gradient-navy" style="width: 100%; margin-top: 20px;"><i class="fa-brands fa-whatsapp"></i> Gunakan Jasa Rekber Sekarang</a>
-        </div>
-    </div>
-
-    <!-- MODAL INFO CONVERT -->
-    <div id="modalInfoConvert" class="modal-overlay">
-        <div class="modal-content glass-card">
-            <span class="close-btn" onclick="closeModal('modalInfoConvert')">&times;</span>
-            <h3 class="box-title" style="justify-content: center; margin-bottom: 20px; font-size: 1.5rem;"><i class="fa-solid fa-wallet text-cyan"></i> Jasa Convert Saldo</h3>
-            <div style="text-align: left; color: var(--putih); font-size: 0.95rem; line-height: 1.6;">
-                <p style="margin-bottom: 15px;">Punya saldo mengendap di suatu platform namun butuh uang tunai atau pindah ke platform lain? Kami solusinya!</p>
-                <ul style="margin-bottom: 15px; padding-left: 20px; color: var(--abu);">
-                    <li>Convert Saldo Pulsa dan Paketan</li>
-                    <li>Tukar Saldo antar E-Wallet dan Bank</li>
-                    <li>Valas atau Convert Mata Uang Luar Negeri</li>
-                </ul>
-                <p style="padding: 12px; background: rgba(6, 182, 212, 0.1); border: 1px dashed var(--cyan); border-radius: 8px; text-align: center; font-weight: 600; color: var(--cyan);">
-                    Rate sangat bersahabat, proses hitungan menit, dan dijamin 100% tepercaya!
-                </p>
-            </div>
-            <a href="https://wa.me/6285266953530?text=Halo%20Admin%20Dileppp,%20saya%20ingin%20menggunakan%20jasa%20Convert%20Saldo." target="_blank" class="btn-primary" style="width: 100%; margin-top: 20px;"><i class="fa-brands fa-whatsapp"></i> Hubungi Admin Convert</a>
         </div>
     </div>
 
