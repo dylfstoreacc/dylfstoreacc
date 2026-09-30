@@ -44,14 +44,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
     new Swiper('.hero-carousel-container', { effect: 'fade', speed: 800, autoplay: { delay: 3000, disableOnInteraction: false }, pagination: { el: '.swiper-pagination', clickable: true }, loop: true });
 
+    // SYSTEM PROGRESSIVE STREAMING (Muncul seketika tanpa menunda render)
     setTimeout(() => {
-        loadDataStreamBatch('preview-testi-stok', 'full-testi-stok', 'stok', false, '', 150);
-        loadDataStreamBatch('preview-testi-rekber', 'full-testi-rekber', 'rekber', false, '', 100);
-        loadDataStreamBatch('preview-testi-topup', 'full-testi-topup', 'topup', false, '', 50);
-        loadDataStreamBatch('preview-testi-convert', 'full-testi-convert', 'convert', false, '', 50);
+        loadDataStreamProgressive('preview-testi-stok', 'full-testi-stok', 'stok', false, '');
+        loadDataStreamProgressive('preview-testi-rekber', 'full-testi-rekber', 'rekber', false, '');
+        loadDataStreamProgressive('preview-testi-topup', 'full-testi-topup', 'topup', false, '');
+        loadDataStreamProgressive('preview-testi-convert', 'full-testi-convert', 'convert', false, '');
 
-        loadDataStreamBatch(null, 'katalog-stok-grid', 'stok', true, 'Stok Akun', 100);
-        loadDataStreamBatch(null, 'katalog-topup-grid', 'topup', true, 'Topup Item', 50);
+        loadDataStreamProgressive(null, 'katalog-stok-grid', 'stok', true, 'Stok Akun');
+        loadDataStreamProgressive(null, 'katalog-topup-grid', 'topup', true, 'Topup Item');
     }, 500);
     
     initScrollReveal();
@@ -100,36 +101,52 @@ function changeLang(googleCode, langText, btnElement, flagCode) {
     closeModal('langModal');
 }
 
-// ZOOM IMAGE FUNCTION
 window.zoomImage = function(src) {
     document.getElementById('zoomedImageSrc').src = src;
     openModal('imageZoomModal');
 }
 
-async function loadDataStreamBatch(previewId, fullId, folderName, isKatalog, waType, maxCheck) {
+// SISTEM SMART SCANNER PROGRESSIVE (STREAMING INSTAN & CEPAT)
+async function loadDataStreamProgressive(previewId, fullId, folderName, isKatalog, waType) {
     const preview = document.getElementById(previewId);
     const full = document.getElementById(fullId);
     
-    if (preview && !isKatalog) { preview.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 20px;"><i class="fa-solid fa-spinner fa-spin text-cyan" style="font-size: 1.5rem;"></i></div>`; }
-    if (full) { full.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 40px;"><i class="fa-solid fa-spinner fa-spin text-cyan" style="font-size: 2rem;"></i><p class="text-muted" style="margin-top: 15px; font-size: 0.9rem;">Memuat Data...</p></div>`; }
+    if (preview && !isKatalog) preview.innerHTML = '';
+    if (full) full.innerHTML = '';
 
-    let validItems = [];
-    let consecutiveEmpty = 0;
-    const batchSize = 10; 
-
-    for (let i = 1; i <= maxCheck; i += batchSize) {
-        let promises = [];
-        for (let j = i; j < i + batchSize && j <= maxCheck; j++) { promises.push(checkImg(j)); }
-        let results = await Promise.all(promises);
-        
-        for (let res of results) {
-            if (res) { validItems.push(res); consecutiveEmpty = 0; } 
-            else { consecutiveEmpty++; }
-        }
-        if (consecutiveEmpty >= 5) break;
+    let foundAny = false;
+    let batchSize = 5; // Cek 5 gambar sekejap mata
+    
+    // Skeleton Spinner yang akan tergantikan
+    let loadingHintId = `loading-${folderName}`;
+    if (full) {
+        full.insertAdjacentHTML('beforeend', `<div id="${loadingHintId}" style="grid-column: 1/-1; text-align: center; padding: 20px;"><i class="fa-solid fa-spinner fa-spin text-cyan"></i> <span class="text-muted" style="font-size:0.85rem;">Memindai data...</span></div>`);
     }
 
-    validItems.sort((a, b) => b.id - a.id);
+    for (let i = 1; i <= 300; i += batchSize) {
+        let promises = [];
+        for (let j = i; j < i + batchSize; j++) { promises.push(checkImg(j)); }
+
+        let results = await Promise.all(promises);
+        let emptyInBatch = 0;
+
+        for (let res of results) {
+            if (res) {
+                foundAny = true;
+                insertToDOM(res); // Gambar LANGSUNG dimunculkan di layar! (Streaming)
+            } else {
+                emptyInBatch++;
+            }
+        }
+
+        // Jika ada 5 nomor kosong berturut-turut, mesin otomatis berhenti bekerja.
+        if (emptyInBatch === batchSize) break;
+    }
+
+    let hintEl = document.getElementById(loadingHintId);
+    if (hintEl) hintEl.remove();
+
+    if (!foundAny) renderEmptyState();
 
     function checkImg(id) {
         return new Promise(resolve => {
@@ -145,61 +162,68 @@ async function loadDataStreamBatch(previewId, fullId, folderName, isKatalog, waT
         });
     }
 
-    let fullHTML = '';
-    let previewHTML = '';
+    function insertToDOM(item) {
+        if (isKatalog) {
+            const msg = encodeURIComponent(`Halo Admin Dileppp, saya tertarik dengan [${waType}] yang ada di Katalog Web (Gambar No. ${item.id}). Apakah masih tersedia?`);
+            const cardId = `katalog-card-${folderName}-${item.id}`;
+            const imgRatio = folderName === 'stok' ? 'aspect-ratio: 3/4;' : 'aspect-ratio: 16/9;';
 
-    if (validItems.length === 0) {
-        if(isKatalog) {
-            fullHTML = `<div style="grid-column: 1/-1; text-align:center; padding: 30px 10px; background: rgba(0,0,0,0.2); border-radius: 12px; border: 1px dashed rgba(255,255,255,0.1);"><i class="fa-solid fa-box-open text-muted" style="font-size: 3rem; margin-bottom: 15px;"></i><h4 style="color: var(--putih); margin-bottom: 5px;">Stok Belum Tersedia</h4><p class="text-muted" style="font-size:0.9rem;">Saat ini belum ada ${waType} yang dipublikasikan. Silakan hubungi admin.</p></div>`;
+            let tempDiv = document.createElement('div');
+            tempDiv.innerHTML = `
+            <div class="katalog-item-card reveal active">
+                <div class="katalog-img-box" onclick="zoomImage('${item.src}')" style="cursor: zoom-in; ${imgRatio}" title="Klik untuk perbesar">
+                    <img src="${item.src}" loading="lazy">
+                    <div class="zoom-hint"><i class="fa-solid fa-magnifying-glass-plus"></i></div>
+                </div>
+                <div class="katalog-desc" id="${cardId}-desc">
+                    <i class="fa-solid fa-spinner fa-spin text-cyan" style="font-size: 0.8rem;"></i> <span style="font-size: 0.8rem;">Memuat keterangan...</span>
+                </div>
+                <div class="katalog-action">
+                    <a href="https://wa.me/6285266953530?text=${msg}" target="_blank" class="btn-primary" style="width: 100%; padding: 10px; font-size: 0.85rem;"><i class="fa-brands fa-whatsapp"></i> Tanyakan Admin</a>
+                </div>
+            </div>`;
+            
+            // Susun dari yang terbaru di paling atas
+            if(full) full.prepend(tempDiv.firstElementChild);
+
+            // Fetch deskripsi produk .txt
+            fetch(`static/img/katalog/${folderName}/${item.id}.txt`)
+                .then(res => { if(res.ok) return res.text(); throw new Error('No desc'); })
+                .then(text => {
+                    let formattedText = text.replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/\n/g, "<br>");
+                    let descEl = document.getElementById(`${cardId}-desc`);
+                    if(descEl) descEl.innerHTML = `<div style="color: var(--putih); font-size: 0.85rem;">${formattedText}</div>`;
+                })
+                .catch(() => {
+                    let descEl = document.getElementById(`${cardId}-desc`);
+                    if(descEl) descEl.innerHTML = `<span style="font-size:0.8rem; font-style:italic; color: var(--abu);">Detail spesifikasi & harga silakan tanyakan admin.</span>`;
+                });
+
         } else {
-            fullHTML = `<div style="grid-column: 1/-1; text-align:center; padding: 20px;"><p class="text-muted" style="font-size:0.85rem;">Belum ada testimoni.</p></div>`;
-            previewHTML = fullHTML;
-        }
-    } else {
-        validItems.forEach((item, index) => {
-            if (isKatalog) {
-                const msg = encodeURIComponent(`Halo Admin Dileppp, saya tertarik dengan [${waType}] yang ada di Katalog Web (Gambar No. ${item.id}). Apakah masih tersedia?`);
-                const cardId = `katalog-card-${folderName}-${item.id}`;
-                
-                // SISTEM PENYESUAIAN RASIO CERDAS
-                // Jika folder stok -> portrait 3:4. Jika folder topup -> landscape 16:9
-                const imgRatio = folderName === 'stok' ? 'aspect-ratio: 3/4;' : 'aspect-ratio: 16/9;';
+            let tempFull = document.createElement('div');
+            tempFull.innerHTML = `<div class="testi-item reveal active"><img src="${item.src}" loading="lazy"></div>`;
+            if(full) full.prepend(tempFull.firstElementChild);
 
-                fullHTML += `
-                <div class="katalog-item-card">
-                    <div class="katalog-img-box" onclick="zoomImage('${item.src}')" style="cursor: zoom-in; ${imgRatio}" title="Klik untuk perbesar">
-                        <img src="${item.src}" loading="lazy">
-                        <div class="zoom-hint"><i class="fa-solid fa-magnifying-glass-plus"></i></div>
-                    </div>
-                    <div class="katalog-desc" id="${cardId}-desc">
-                        <i class="fa-solid fa-spinner fa-spin text-cyan"></i> Memuat keterangan...
-                    </div>
-                    <div class="katalog-action">
-                        <a href="https://wa.me/6285266953530?text=${msg}" target="_blank" class="btn-primary" style="width: 100%; padding: 10px; font-size: 0.85rem;"><i class="fa-brands fa-whatsapp"></i> Tanyakan Admin</a>
-                    </div>
-                </div>`;
-                
-                // Fetch teks keterangan (.txt)
-                fetch(`static/img/katalog/${folderName}/${item.id}.txt`)
-                    .then(res => { if(res.ok) return res.text(); throw new Error('No desc'); })
-                    .then(text => {
-                        let formattedText = text.replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/\n/g, "<br>");
-                        document.getElementById(`${cardId}-desc`).innerHTML = `<div style="color: var(--putih);">${formattedText}</div>`;
-                    })
-                    .catch(() => {
-                        document.getElementById(`${cardId}-desc`).innerHTML = `<span style="font-size:0.85rem; font-style:italic;">Detail spesifikasi & harga silakan tanyakan langsung ke admin via WhatsApp.</span>`;
-                    });
-
-            } else {
-                const testiHTML = `<div class="testi-item"><img src="${item.src}" loading="lazy"></div>`;
-                fullHTML += testiHTML;
-                if (index < 4) previewHTML += testiHTML;
+            if(preview && !isKatalog) {
+                let tempPrev = document.createElement('div');
+                tempPrev.innerHTML = `<div class="testi-item reveal active"><img src="${item.src}" loading="lazy"></div>`;
+                preview.prepend(tempPrev.firstElementChild);
+                // Hanya sisakan 4 foto di menu beranda
+                if (preview.children.length > 4) {
+                    preview.removeChild(preview.lastElementChild);
+                }
             }
-        });
+        }
     }
 
-    if (full) full.innerHTML = fullHTML;
-    if (preview && !isKatalog) preview.innerHTML = previewHTML;
+    function renderEmptyState() {
+        if(isKatalog) {
+            if(full) full.innerHTML = `<div style="grid-column: 1/-1; text-align:center; padding: 30px 10px; background: rgba(0,0,0,0.2); border-radius: 12px; border: 1px dashed rgba(255,255,255,0.1);"><i class="fa-solid fa-box-open text-muted" style="font-size: 3rem; margin-bottom: 15px;"></i><h4 style="color: var(--putih); margin-bottom: 5px;">Stok Belum Tersedia</h4><p class="text-muted" style="font-size:0.9rem;">Saat ini belum ada ${waType} yang dipublikasikan. Silakan hubungi admin.</p></div>`;
+        } else {
+            if(full) full.innerHTML = `<div style="grid-column: 1/-1; text-align:center; padding: 20px;"><p class="text-muted" style="font-size:0.85rem;">Belum ada testimoni.</p></div>`;
+            if(preview && !isKatalog) preview.innerHTML = `<div style="grid-column: 1/-1; text-align:center; padding: 20px;"><p class="text-muted" style="font-size:0.85rem;">Belum ada testimoni.</p></div>`;
+        }
+    }
 }
 
 function openModal(id) { document.getElementById(id).style.display = 'flex'; }
