@@ -11,6 +11,7 @@
 </head>
 <body>
 
+    <!-- Mesin Penerjemah Tersembunyi -->
     <div id="google_translate_element" style="display:none;"></div>
 
     <!-- PRELOADER ANIMASI -->
@@ -66,15 +67,13 @@
         </div>
     </div>
 
-    <!-- MODAL ZOOM GAMBAR KATALOG -->
+    <!-- MODAL ZOOM GAMBAR -->
     <div id="imageZoomModal" class="modal-overlay" style="z-index: 3000;">
         <span class="close-btn" onclick="closeModal('imageZoomModal')" style="color: #fff; top: 20px; right: 30px; font-size: 2.5rem; text-shadow: 0 2px 10px rgba(0,0,0,0.8);">&times;</span>
         <img id="zoomedImageSrc" src="" style="max-width: 95%; max-height: 85vh; border-radius: 12px; object-fit: contain; box-shadow: 0 10px 40px rgba(0,0,0,0.8);">
     </div>
 
-    <a href="https://wa.me/6285266953530" class="floating-wa" target="_blank">
-        <i class="fa-brands fa-whatsapp"></i>
-    </a>
+    <a href="https://wa.me/6285266953530" class="floating-wa" target="_blank"><i class="fa-brands fa-whatsapp"></i></a>
 
     <!-- MODAL ABOUT STORE -->
     <div id="aboutStoreModal" class="modal-overlay">
@@ -143,7 +142,7 @@
         </div>
     </div>
 
-    <!-- MODAL KATALOG STOK AKUN -->
+    <!-- MODAL KATALOG -->
     <div id="modalKatalogStok" class="modal-overlay">
         <div class="modal-content glass-card modal-large">
             <span class="close-btn" onclick="closeModal('modalKatalogStok')">&times;</span>
@@ -155,7 +154,6 @@
         </div>
     </div>
 
-    <!-- MODAL KATALOG TOPUP -->
     <div id="modalKatalogTopup" class="modal-overlay">
         <div class="modal-content glass-card modal-large">
             <span class="close-btn" onclick="closeModal('modalKatalogTopup')">&times;</span>
@@ -171,28 +169,36 @@
     <div id="modalTestiStok" class="modal-overlay">
         <div class="modal-content glass-card modal-large">
             <span class="close-btn" onclick="closeModal('modalTestiStok')">&times;</span>
-            <h3 class="box-title" style="justify-content: center;"><i class="fa-solid fa-box-open text-cyan"></i> Semua Testi Stok Akun</h3>
+            <div class="modal-header">
+                <h3 class="box-title" style="justify-content: center;"><i class="fa-solid fa-box-open text-cyan"></i> Semua Testi Stok Akun</h3>
+            </div>
             <div class="testi-modal-grid" id="full-testi-stok"></div>
         </div>
     </div>
     <div id="modalTestiRekber" class="modal-overlay">
         <div class="modal-content glass-card modal-large">
             <span class="close-btn" onclick="closeModal('modalTestiRekber')">&times;</span>
-            <h3 class="box-title" style="justify-content: center;"><i class="fa-solid fa-handshake-angle text-purple"></i> Semua Testi Jasa Rekber</h3>
+            <div class="modal-header">
+                <h3 class="box-title" style="justify-content: center;"><i class="fa-solid fa-handshake-angle text-purple"></i> Semua Testi Jasa Rekber</h3>
+            </div>
             <div class="testi-modal-grid" id="full-testi-rekber"></div>
         </div>
     </div>
     <div id="modalTestiTopup" class="modal-overlay">
         <div class="modal-content glass-card modal-large">
             <span class="close-btn" onclick="closeModal('modalTestiTopup')">&times;</span>
-            <h3 class="box-title" style="justify-content: center;"><i class="fa-solid fa-gem text-cyan"></i> Semua Testi Topup Item</h3>
+            <div class="modal-header">
+                <h3 class="box-title" style="justify-content: center;"><i class="fa-solid fa-gem text-cyan"></i> Semua Testi Topup Item</h3>
+            </div>
             <div class="testi-modal-grid" id="full-testi-topup"></div>
         </div>
     </div>
     <div id="modalTestiConvert" class="modal-overlay">
         <div class="modal-content glass-card modal-large">
             <span class="close-btn" onclick="closeModal('modalTestiConvert')">&times;</span>
-            <h3 class="box-title" style="justify-content: center;"><i class="fa-solid fa-wallet text-purple"></i> Semua Testi Convert Saldo</h3>
+            <div class="modal-header">
+                <h3 class="box-title" style="justify-content: center;"><i class="fa-solid fa-wallet text-purple"></i> Semua Testi Convert Saldo</h3>
+            </div>
             <div class="testi-modal-grid" id="full-testi-convert"></div>
         </div>
     </div>
