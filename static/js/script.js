@@ -1,219 +1,265 @@
-function googleTranslateElementInit() {
-    new google.translate.TranslateElement({ pageLanguage: 'id', includedLanguages: 'id,en,ms', autoDisplay: false }, 'google_translate_element');
+:root {
+    /* DEFAULT THEME (DARK MODE) */
+    --navy: #0F172A; --ungu-neon: #8B5CF6; --cyan: #06B6D4;
+    --putih: #F8FAFC; --abu: #94A3B8; --hitam: #020617;
+    --bg-dark: #0B0F19; --card-bg: #1F2937; --card-border: rgba(255,255,255,0.05);
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-    const savedTheme = localStorage.getItem('theme');
-    if(savedTheme === 'light') {
-        document.body.classList.add('light-mode');
-        const themeIcon = document.getElementById('themeIcon');
-        if(themeIcon) { themeIcon.classList.remove('fa-moon'); themeIcon.classList.add('fa-sun'); }
-    }
-
-    const welcomeTextContainer = document.getElementById("welcomeText");
-    if(welcomeTextContainer) {
-        welcomeTextContainer.innerHTML = ""; 
-        const textToAnimate = "Welcome To DYLF STOREacc"; 
-        const words = textToAnimate.split(" ");
-        let letterDelayCounter = 0;
-        
-        words.forEach((word) => {
-            const wordContainer = document.createElement("span");
-            wordContainer.className = "word-box";
-            if(word === "DYLF") wordContainer.classList.add("text-logo-dylf");
-            if(word === "STOREacc") wordContainer.classList.add("text-logo-store");
-            word.split("").forEach((char) => {
-                const charSpan = document.createElement("span");
-                charSpan.className = "letter-box";
-                charSpan.textContent = char;
-                charSpan.style.animationDelay = `${letterDelayCounter * 0.1}s`;
-                wordContainer.appendChild(charSpan);
-                letterDelayCounter++;
-            });
-            welcomeTextContainer.appendChild(wordContainer);
-        });
-
-        setTimeout(() => {
-            const preloader = document.getElementById("preloader");
-            if(preloader) {
-                preloader.style.opacity = "0";
-                setTimeout(() => { preloader.style.visibility = "hidden"; }, 800);
-            }
-        }, 3000); 
-    }
-
-    new Swiper('.hero-carousel-container', { effect: 'fade', speed: 800, autoplay: { delay: 3000, disableOnInteraction: false }, pagination: { el: '.swiper-pagination', clickable: true }, loop: true });
-
-    setTimeout(() => {
-        loadDataStreamBatch('preview-testi-stok', 'full-testi-stok', 'stok', false, '', 150);
-        loadDataStreamBatch('preview-testi-rekber', 'full-testi-rekber', 'rekber', false, '', 100);
-        loadDataStreamBatch('preview-testi-topup', 'full-testi-topup', 'topup', false, '', 50);
-        loadDataStreamBatch('preview-testi-convert', 'full-testi-convert', 'convert', false, '', 50);
-
-        loadDataStreamBatch(null, 'katalog-stok-grid', 'stok', true, 'Stok Akun', 100);
-        loadDataStreamBatch(null, 'katalog-topup-grid', 'topup', true, 'Topup Item', 50);
-    }, 500);
-    
-    initScrollReveal();
-
-    const menuBtn = document.getElementById('mobileMenuBtn');
-    const closeBtn = document.getElementById('closeSidebarBtn');
-    const sidebar = document.getElementById('sidebarMenu');
-    const overlay = document.getElementById('sidebarOverlay');
-    const sidebarLinks = document.querySelectorAll('.sidebar-link');
-
-    function toggleSidebar() { sidebar.classList.toggle('active'); overlay.classList.toggle('active'); }
-
-    if(menuBtn && closeBtn && overlay) {
-        menuBtn.addEventListener('click', toggleSidebar);
-        closeBtn.addEventListener('click', toggleSidebar);
-        overlay.addEventListener('click', toggleSidebar);
-        sidebarLinks.forEach(link => link.addEventListener('click', toggleSidebar));
-    }
-});
-
-function toggleTheme() {
-    document.body.classList.toggle('light-mode');
-    const themeIcon = document.getElementById('themeIcon');
-    if(document.body.classList.contains('light-mode')) {
-        themeIcon.classList.remove('fa-moon'); themeIcon.classList.add('fa-sun');
-        localStorage.setItem('theme', 'light');
-    } else {
-        themeIcon.classList.remove('fa-sun'); themeIcon.classList.add('fa-moon');
-        localStorage.setItem('theme', 'dark');
-    }
+/* LIGHT MODE OVERRIDES */
+body.light-mode {
+    --bg-dark: #F1F5F9; 
+    --card-bg: #FFFFFF; 
+    --putih: #0F172A; 
+    --abu: #475569; 
+    --hitam: #FFFFFF;
+    --card-border: rgba(0,0,0,0.1);
 }
 
-function changeLang(googleCode, langText, btnElement, flagCode) {
-    document.getElementById('currentFlag').src = `https://flagcdn.com/w20/${flagCode}.png`;
-    document.getElementById('currentLang').innerText = langText;
-    const btns = document.querySelectorAll('.lang-btn');
-    btns.forEach(btn => btn.classList.remove('active'));
-    btnElement.classList.add('active');
-    
-    function triggerTranslate() {
-        let selectField = document.querySelector(".goog-te-combo");
-        if (selectField) { selectField.value = googleCode; selectField.dispatchEvent(new Event("change")); }
-    }
-    triggerTranslate();
-    setTimeout(triggerTranslate, 500); 
-    closeModal('langModal');
+/* ANTI-BERCAK TAP HIGHLIGHT & RESET OUTLINE */
+* { 
+    margin: 0; padding: 0; box-sizing: border-box; scroll-behavior: smooth; font-family: 'Urbanist', sans-serif; 
+    -webkit-tap-highlight-color: transparent !important; 
 }
 
-// ZOOM IMAGE FUNCTION
-window.zoomImage = function(src) {
-    document.getElementById('zoomedImageSrc').src = src;
-    openModal('imageZoomModal');
+a, button, .service-card, .menu-toggle, .theme-toggle, .currency-badge, .close-sidebar, .close-btn { 
+    outline: none; touch-action: manipulation; 
 }
 
-async function loadDataStreamBatch(previewId, fullId, folderName, isKatalog, waType, maxCheck) {
-    const preview = document.getElementById(previewId);
-    const full = document.getElementById(fullId);
-    
-    if (preview && !isKatalog) { preview.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 20px;"><i class="fa-solid fa-spinner fa-spin text-cyan" style="font-size: 1.5rem;"></i></div>`; }
-    if (full) { full.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 40px;"><i class="fa-solid fa-spinner fa-spin text-cyan" style="font-size: 2rem;"></i><p class="text-muted" style="margin-top: 15px; font-size: 0.9rem;">Memuat Data...</p></div>`; }
+html, body { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; overflow-x: hidden; }
+body { background-color: var(--bg-dark); color: var(--putih); -webkit-font-smoothing: antialiased; transition: background-color 0.4s ease, color 0.4s ease; }
 
-    let validItems = [];
-    let consecutiveEmpty = 0;
-    const batchSize = 10; 
+/* HIDE GOOGLE TRANSLATE ANNOYING BAR */
+.VIpgJd-Zvi9od-ORHb-OEVmcd, .goog-te-banner-frame, .skiptranslate > iframe { display: none !important; }
+body { top: 0 !important; position: static !important; }
+.skiptranslate { color: transparent !important; }
+font { background-color: transparent !important; box-shadow: none !important; }
 
-    for (let i = 1; i <= maxCheck; i += batchSize) {
-        let promises = [];
-        for (let j = i; j < i + batchSize && j <= maxCheck; j++) { promises.push(checkImg(j)); }
-        let results = await Promise.all(promises);
-        
-        for (let res of results) {
-            if (res) { validItems.push(res); consecutiveEmpty = 0; } 
-            else { consecutiveEmpty++; }
-        }
-        if (consecutiveEmpty >= 5) break;
-    }
+h1, h2, h3, h4 { font-family: 'Poppins', sans-serif; }
+.text-muted { color: var(--abu); }
+.text-cyan { color: var(--cyan); }
+.text-purple { color: var(--ungu-neon); }
+.text-gradient-navy { background: linear-gradient(90deg, var(--cyan), var(--ungu-neon)); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
 
-    validItems.sort((a, b) => b.id - a.id);
-
-    function checkImg(id) {
-        return new Promise(resolve => {
-            let img = new Image();
-            img.onload = () => resolve({ id: id, src: img.src });
-            img.onerror = () => {
-                let imgPng = new Image();
-                imgPng.onload = () => resolve({ id: id, src: imgPng.src });
-                imgPng.onerror = () => resolve(null);
-                imgPng.src = `static/img/${isKatalog ? 'katalog' : 'testimoni'}/${folderName}/${id}.png`;
-            };
-            img.src = `static/img/${isKatalog ? 'katalog' : 'testimoni'}/${folderName}/${id}.jpg`;
-        });
-    }
-
-    let fullHTML = '';
-    let previewHTML = '';
-
-    if (validItems.length === 0) {
-        if(isKatalog) {
-            fullHTML = `<div style="grid-column: 1/-1; text-align:center; padding: 30px 10px; background: rgba(0,0,0,0.2); border-radius: 12px; border: 1px dashed rgba(255,255,255,0.1);"><i class="fa-solid fa-box-open text-muted" style="font-size: 3rem; margin-bottom: 15px;"></i><h4 style="color: var(--putih); margin-bottom: 5px;">Stok Belum Tersedia</h4><p class="text-muted" style="font-size:0.9rem;">Saat ini belum ada ${waType} yang dipublikasikan. Silakan hubungi admin.</p></div>`;
-        } else {
-            fullHTML = `<div style="grid-column: 1/-1; text-align:center; padding: 20px;"><p class="text-muted" style="font-size:0.85rem;">Belum ada testimoni.</p></div>`;
-            previewHTML = fullHTML;
-        }
-    } else {
-        validItems.forEach((item, index) => {
-            if (isKatalog) {
-                const msg = encodeURIComponent(`Halo Admin Dileppp, saya tertarik dengan [${waType}] yang ada di Katalog Web (Gambar No. ${item.id}). Apakah masih tersedia?`);
-                const cardId = `katalog-card-${folderName}-${item.id}`;
-                
-                fullHTML += `
-                <div class="katalog-item-card">
-                    <div class="katalog-img-box" onclick="zoomImage('${item.src}')" style="cursor: zoom-in;" title="Klik untuk perbesar">
-                        <img src="${item.src}" loading="lazy">
-                        <div class="zoom-hint"><i class="fa-solid fa-magnifying-glass-plus"></i></div>
-                    </div>
-                    <div class="katalog-desc" id="${cardId}-desc">
-                        <i class="fa-solid fa-spinner fa-spin text-cyan"></i> Memuat keterangan...
-                    </div>
-                    <div class="katalog-action">
-                        <a href="https://wa.me/6285266953530?text=${msg}" target="_blank" class="btn-primary" style="width: 100%; padding: 10px; font-size: 0.85rem;"><i class="fa-brands fa-whatsapp"></i> Tanyakan Admin</a>
-                    </div>
-                </div>`;
-                
-                // SISTEM SMART TEXT READER (.txt fetcher)
-                fetch(`static/img/katalog/${folderName}/${item.id}.txt`)
-                    .then(res => { if(res.ok) return res.text(); throw new Error('No desc'); })
-                    .then(text => {
-                        let formattedText = text.replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/\n/g, "<br>");
-                        document.getElementById(`${cardId}-desc`).innerHTML = `<div style="color: var(--putih);">${formattedText}</div>`;
-                    })
-                    .catch(() => {
-                        document.getElementById(`${cardId}-desc`).innerHTML = `<span style="font-size:0.85rem; font-style:italic;">Detail spesifikasi & harga silakan tanyakan langsung ke admin via WhatsApp.</span>`;
-                    });
-
-            } else {
-                const testiHTML = `<div class="testi-item"><img src="${item.src}" loading="lazy"></div>`;
-                fullHTML += testiHTML;
-                if (index < 4) previewHTML += testiHTML;
-            }
-        });
-    }
-
-    if (full) full.innerHTML = fullHTML;
-    if (preview && !isKatalog) preview.innerHTML = previewHTML;
+/* HARDWARE ACCELERATION */
+.glass-card, .service-card, .reveal, .testi-item, .swiper-slide {
+    transform: translate3d(0, 0, 0); -webkit-transform: translate3d(0, 0, 0);
+    backface-visibility: hidden; perspective: 1000px;
 }
 
-function openModal(id) { document.getElementById(id).style.display = 'flex'; }
-function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+/* PRELOADER */
+#preloader { position: fixed; top: 0; left: 0; width: 100%; height: 100vh; background-color: var(--bg-dark); display: flex; justify-content: center; align-items: center; z-index: 9999; transition: opacity 0.5s ease, visibility 0.5s ease; }
+.welcome-text { font-size: clamp(1.8rem, 5vw, 3.5rem); font-weight: 800; display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; text-align: center; }
+.welcome-text .word-box { display: inline-block; margin-right: 15px; }
 
-window.onclick = function(event) {
-    const modals = document.querySelectorAll('.modal-overlay');
-    modals.forEach(modal => {
-        if (event.target === modal) { modal.style.display = "none"; }
-    });
+.welcome-text .letter-box { 
+    display: inline-block; opacity: 0; transform: translateY(30px); 
+    animation: textRevealHD 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards; color: var(--putih); 
+}
+@keyframes textRevealHD { 
+    0% { opacity: 0; transform: translateY(30px); } 
+    100% { opacity: 1; transform: translateY(0); } 
 }
 
-function initScrollReveal() {
-    const reveals = document.querySelectorAll('.reveal');
-    const observer = new IntersectionObserver((entries, obs) => {
-        entries.forEach(entry => { 
-            if (entry.isIntersecting) { entry.target.classList.add('active'); obs.unobserve(entry.target); } 
-        });
-    }, { root: null, threshold: 0.05 }); 
-    reveals.forEach(reveal => observer.observe(reveal));
+.text-logo-dylf { 
+    color: #FFFFFF !important; 
+    text-shadow: 0 0 10px #06B6D4, 0 0 20px #06B6D4, 0 0 40px #8B5CF6 !important; 
+    display: inline-block; font-weight: 900; 
+}
+
+/* NAVBAR */
+nav { position: fixed; top: 0; width: 100%; padding: 15px 5%; display: flex; justify-content: space-between; align-items: center; background: var(--bg-dark); opacity: 0.95; backdrop-filter: blur(10px); border-bottom: 1px solid var(--card-border); z-index: 1000; transition: background-color 0.4s ease; }
+.watermark-logo { height: 40px; object-fit: contain; }
+.nav-right { display: flex; align-items: center; gap: 15px; }
+.currency-badge { background: var(--card-bg); padding: 6px 12px; border-radius: 20px; font-size: 0.85rem; font-weight: 600; display: flex; align-items: center; gap: 8px; border: 1px solid var(--card-border); transition: 0.2s ease-out; cursor: pointer; }
+.currency-badge:hover { border-color: var(--cyan); box-shadow: 0 4px 10px rgba(6, 182, 212, 0.2); transform: translateY(-2px); }
+.currency-badge:active { transform: scale(0.92); border-color: var(--cyan); background: rgba(6, 182, 212, 0.15); }
+.currency-badge img { width: 18px; border-radius: 2px; }
+.menu-toggle, .theme-toggle { font-size: 1.5rem; color: var(--putih); transition: 0.2s ease-out; cursor: pointer; padding: 5px; }
+.menu-toggle:hover, .theme-toggle:hover { color: var(--cyan); transform: scale(1.1); }
+.menu-toggle:active, .theme-toggle:active { transform: scale(0.8); color: var(--cyan); }
+
+/* SIDEBAR MENU */
+.sidebar-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100vh; background: rgba(0,0,0,0.7); z-index: 1001; opacity: 0; visibility: hidden; transition: 0.3s; }
+.sidebar-overlay.active { opacity: 1; visibility: visible; }
+.sidebar-menu { position: fixed; top: 0; right: -320px; width: 300px; height: 100vh; background: var(--bg-dark); z-index: 1002; transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1); border-left: 1px solid var(--card-border); padding: 30px 25px; display: flex; flex-direction: column; }
+.sidebar-menu.active { right: 0; }
+.sidebar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; padding-bottom: 15px; border-bottom: 1px solid var(--card-border); }
+.close-sidebar { font-size: 1.8rem; color: var(--abu); cursor: pointer; transition: 0.2s; }
+.close-sidebar:hover { color: var(--cyan); transform: scale(1.1); }
+.close-sidebar:active { transform: scale(0.85); color: var(--cyan); }
+.sidebar-links { display: flex; flex-direction: column; gap: 15px; }
+.sidebar-link { color: var(--putih); text-decoration: none; font-size: 1.05rem; padding: 12px 18px; background: var(--card-bg); border-radius: 12px; display: flex; align-items: center; gap: 15px; transition: 0.2s ease-out; font-weight: 600; border: 1px solid transparent; }
+.sidebar-link:hover { border-color: var(--cyan); color: var(--cyan); transform: translateX(-5px); box-shadow: 0 4px 10px rgba(6, 182, 212, 0.1); }
+.sidebar-link:active { background: rgba(6, 182, 212, 0.15); border-color: var(--cyan); color: var(--cyan); transform: scale(0.96); }
+
+/* MODALS */
+.modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 2000; display: none; justify-content: center; align-items: center; backdrop-filter: blur(5px); padding: 20px; }
+.modal-content { background: var(--card-bg); width: 100%; padding: 30px 25px; position: relative; animation: modalPop 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94); max-width: 500px; border-radius: 20px; border: 1px solid var(--card-border); }
+.modal-large { max-width: 800px; padding: 30px; }
+.close-btn { position: absolute; top: 15px; right: 20px; font-size: 2rem; color: var(--abu); cursor: pointer; z-index: 10; transition: 0.2s;}
+.close-btn:hover { color: var(--cyan); transform: scale(1.1); }
+.close-btn:active { transform: scale(0.75); color: var(--cyan); }
+@keyframes modalPop { from { transform: scale(0.95); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+.lang-options { display: flex; flex-direction: column; gap: 12px; }
+.lang-btn { background: var(--bg-dark); border: 1px solid var(--card-border); padding: 15px; border-radius: 10px; color: var(--putih); display: flex; align-items: center; gap: 15px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: 0.2s ease-out; width: 100%; text-align: left; }
+.lang-btn:hover { border-color: var(--cyan); color: var(--cyan); transform: translateY(-2px); box-shadow: 0 4px 10px rgba(6, 182, 212, 0.1); }
+.lang-btn:active { transform: scale(0.96); background: rgba(6, 182, 212, 0.15); border-color: var(--cyan); color: var(--cyan); }
+.lang-btn.active { border-color: var(--cyan); color: var(--cyan); background: rgba(6, 182, 212, 0.05); }
+.lang-btn img { width: 24px; border-radius: 3px; }
+
+.about-list-box { text-align: left; margin-bottom: 15px; background: var(--bg-dark); padding: 15px; border-radius: 10px; border: 1px dashed var(--cyan); color: var(--putih); }
+
+/* FLOATING WA (Animasi Hidup) */
+.floating-wa { position: fixed; bottom: 25px; right: 25px; width: 55px; height: 55px; background: #25D366; color: #fff; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 1.8rem; box-shadow: 0 5px 20px rgba(37, 211, 102, 0.4); z-index: 999; transition: 0.2s ease-out; text-decoration: none; }
+.floating-wa:hover { transform: scale(1.1) translateY(-3px); box-shadow: 0 8px 25px rgba(37, 211, 102, 0.6); }
+.floating-wa:active { transform: scale(0.85); background: #1da851; }
+
+/* BENTO DASHBOARD */
+.dashboard-layout { padding: 90px 5% 10px; max-width: 1200px; margin: 0 auto; display: grid; gap: 20px; grid-template-columns: 2fr 1fr; }
+.glass-card { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 16px; overflow: hidden; box-shadow: 0 4px 30px rgba(0,0,0,0.1); }
+.hero-bento { padding: 35px; display: flex; flex-direction: column; justify-content: center; }
+.badge-innovate { display: inline-block; padding: 6px 15px; background: rgba(6, 182, 212, 0.1); border-radius: 20px; font-size: 0.85rem; font-weight: 600; margin-bottom: 15px; width: fit-content; }
+.hero-title { font-size: clamp(1.8rem, 4vw, 3.5rem); line-height: 1.2; margin-bottom: 15px; }
+.hero-subtitle { font-size: 0.95rem; color: var(--abu); margin-bottom: 25px; line-height: 1.6; }
+
+.hero-carousel-container { width: 100%; aspect-ratio: 21/9; border-radius: 12px; margin-bottom: 20px; overflow: hidden; }
+.swiper-slide img { width: 100%; height: 100%; object-fit: cover; border-radius: 12px; }
+
+/* REKBER & MASKOT */
+.sidebar-wrapper { display: flex; flex-direction: column; gap: 20px; }
+.rekber-section, .difibot-section { padding: 25px; }
+.sidebar-title { font-size: 1.2rem; line-height: 1.3; margin-bottom: 5px; }
+.sidebar-desc { font-size: 0.85rem; color: var(--abu); }
+.stat-badge { background: rgba(139, 92, 246, 0.15); color: var(--ungu-neon); padding: 8px 12px; border-radius: 8px; font-weight: 700; font-size: 0.9rem; }
+
+.difibot-section { display: flex; align-items: center; gap: 15px; }
+.difibot-img-box { position: relative; width: 70px; height: 70px; border-radius: 12px; background: #000; overflow: hidden; flex-shrink: 0; border: 1px solid var(--cyan); }
+.difibot-frame { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain; opacity: 0; animation: gif5 2.5s infinite; }
+.difibot-frame:nth-child(1) { animation-delay: 0s; }
+.difibot-frame:nth-child(2) { animation-delay: 0.5s; }
+.difibot-frame:nth-child(3) { animation-delay: 1.0s; }
+.difibot-frame:nth-child(4) { animation-delay: 1.5s; }
+.difibot-frame:nth-child(5) { animation-delay: 2.0s; }
+@keyframes gif5 { 0%, 19.9% { opacity: 1; } 20%, 100% { opacity: 0; } }
+.difibot-title { font-size: 1.25rem; margin-bottom: 5px; }
+
+/* KATALOG LAYANAN */
+.compact-section { padding: 15px 5% 40px; max-width: 1200px; margin: 0 auto; }
+.section-header-left { margin-bottom: 15px; }
+.section-title { font-size: 1.5rem; }
+
+/* BANNER VIP LAPTOP */
+.vip-banner-box { background: var(--card-bg); border: 1px solid rgba(37, 211, 102, 0.3); border-radius: 16px; padding: 25px; margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between; gap: 20px; }
+.vip-content-left { display: flex; align-items: center; gap: 15px; flex: 1; text-align: left; }
+.vip-icon { width: 55px; height: 55px; background: rgba(37, 211, 102, 0.15); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #25D366; font-size: 1.8rem; flex-shrink: 0; }
+.vip-text h4 { color: var(--putih); font-size: 1.15rem; margin-bottom: 5px; }
+.vip-text p { font-size: 0.9rem; line-height: 1.5; margin: 0; color: var(--abu); }
+.vip-buttons-right { display: flex; gap: 12px; flex-shrink: 0; }
+
+/* TOMBOL BUTTON INTERAKTIF (Lebih Hidup & Membal) */
+.btn-primary, .btn-outline-navy, .btn-gradient-navy { 
+    display: inline-flex; align-items: center; justify-content: center; gap: 8px; 
+    padding: 10px 15px; border-radius: 8px; font-weight: 600; text-decoration: none; 
+    transition: all 0.2s ease-out; cursor: pointer; border: none; font-size: 0.9rem; 
+}
+.btn-primary { background: var(--cyan); color: #fff; }
+.btn-primary:hover { transform: translateY(-3px); box-shadow: 0 5px 15px rgba(6, 182, 212, 0.4); }
+.btn-primary:active { transform: scale(0.95); opacity: 0.9; box-shadow: none; }
+
+.btn-outline-navy { background: transparent; border: 1px dashed var(--cyan); color: var(--cyan); }
+.btn-outline-navy:hover { transform: translateY(-3px); background: rgba(6, 182, 212, 0.1); box-shadow: 0 5px 15px rgba(6, 182, 212, 0.2); }
+.btn-outline-navy:active { transform: scale(0.95); background: rgba(6, 182, 212, 0.2); box-shadow: none; }
+
+.btn-gradient-navy { background: linear-gradient(45deg, var(--cyan), var(--ungu-neon)); color: #fff; padding: 12px 15px; }
+.btn-gradient-navy:hover { transform: translateY(-3px); box-shadow: 0 5px 15px rgba(139, 92, 246, 0.4); }
+.btn-gradient-navy:active { transform: scale(0.95); box-shadow: none; }
+
+/* GRID LAYANAN (Hover Card) */
+.grid-container { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; }
+.service-card { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 16px; padding: 20px 15px; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: 0.2s ease-out; cursor: pointer; }
+.service-card:hover { transform: translateY(-5px) scale(1.02); border-color: var(--cyan); box-shadow: 0 10px 25px rgba(6, 182, 212, 0.15); }
+.service-card:active { transform: scale(0.96); border-color: var(--cyan); background: rgba(6, 182, 212, 0.05); box-shadow: none; }
+.service-icon { width: 55px; height: 55px; border-radius: 50%; background: rgba(6, 182, 212, 0.1); color: var(--cyan); font-size: 1.5rem; display: flex; justify-content: center; align-items: center; margin-bottom: 12px; transition: 0.2s; }
+.service-card:hover .service-icon { transform: scale(1.1); background: var(--cyan); color: #fff; }
+.service-card h4 { font-size: 1.05rem; color: var(--putih); margin-bottom: 5px; line-height: 1.3; }
+
+/* KATALOG ITEM MODAL (JUAL BELI & TOPUP) */
+.katalog-modal-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 15px; max-height: 60vh; overflow-y: auto; padding-right: 10px; margin-top: 10px; }
+.katalog-modal-grid::-webkit-scrollbar { width: 6px; }
+.katalog-modal-grid::-webkit-scrollbar-track { background: rgba(0,0,0,0.1); border-radius: 10px; }
+.katalog-modal-grid::-webkit-scrollbar-thumb { background: var(--cyan); border-radius: 10px; }
+.katalog-item-card { background: var(--bg-dark); border: 1px solid var(--card-border); border-radius: 12px; overflow: hidden; display: flex; flex-direction: column; height: 100%; transition: 0.2s ease-out; }
+.katalog-item-card:hover { transform: translateY(-3px); box-shadow: 0 5px 15px rgba(0,0,0,0.3); border-color: var(--card-border); }
+
+/* GAMBAR KATALOG (Rasio diatur via JS, fallback contain) */
+.katalog-img-box { position: relative; width: 100%; background: #000; overflow: hidden; transition: 0.2s; display: flex; align-items: center; justify-content: center; }
+.katalog-img-box:hover { opacity: 0.9; }
+.katalog-img-box img { width: 100%; height: 100%; object-fit: contain; }
+.zoom-hint { position: absolute; bottom: 10px; right: 10px; background: rgba(0,0,0,0.6); color: white; padding: 6px 12px; border-radius: 20px; font-size: 0.8rem; pointer-events: none; border: 1px solid rgba(255,255,255,0.2); }
+.katalog-desc { padding: 15px; flex-grow: 1; font-size: 0.9rem; color: var(--abu); line-height: 1.6; text-align: left; border-top: 1px solid var(--card-border); }
+.katalog-action { padding: 15px; display: flex; justify-content: center; border-top: 1px solid var(--card-border); }
+
+/* TESTIMONI */
+.bento-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.box-title { font-size: 1.1rem; margin-bottom: 15px; display: flex; align-items: center; gap: 10px; color: var(--putih); }
+.box-padding { padding: 20px; }
+.testi-grid-preview { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+.testi-item { aspect-ratio: 1; border-radius: 8px; overflow: hidden; background: #000; transition: 0.2s; }
+.testi-item:hover { transform: scale(1.05); z-index: 10; box-shadow: 0 5px 15px rgba(0,0,0,0.5); }
+.testi-item img { width: 100%; height: 100%; object-fit: cover; }
+
+/* TOMBOL "LIHAT SELURUH TESTI" LEBIH HIDUP */
+.btn-lihat-semua { 
+    width: 100%; padding: 12px; margin-top: 15px; border-radius: 8px; 
+    cursor: pointer; font-size: 0.95rem; font-weight: 600; 
+    background: var(--bg-dark); transition: all 0.2s ease-out; 
+}
+.cyan-glow { border: 1px solid rgba(6, 182, 212, 0.4); color: var(--cyan); }
+.cyan-glow:hover { background: rgba(6, 182, 212, 0.15); border-color: var(--cyan); text-shadow: 0 0 8px rgba(6, 182, 212, 0.5); transform: translateY(-3px); box-shadow: 0 5px 15px rgba(6, 182, 212, 0.2); }
+.cyan-glow:active { background: rgba(6, 182, 212, 0.2); transform: scale(0.96); box-shadow: none; }
+
+.purple-glow { border: 1px solid rgba(139, 92, 246, 0.4); color: var(--ungu-neon); }
+.purple-glow:hover { background: rgba(139, 92, 246, 0.15); border-color: var(--ungu-neon); text-shadow: 0 0 8px rgba(139, 92, 246, 0.5); transform: translateY(-3px); box-shadow: 0 5px 15px rgba(139, 92, 246, 0.2); }
+.purple-glow:active { background: rgba(139, 92, 246, 0.2); transform: scale(0.96); box-shadow: none; }
+
+.testi-modal-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 15px; max-height: 60vh; overflow-y: auto; padding-right: 10px; margin-top: 20px; }
+.testi-modal-grid::-webkit-scrollbar { width: 6px; }
+.testi-modal-grid::-webkit-scrollbar-track { background: rgba(0,0,0,0.1); border-radius: 10px; }
+.testi-modal-grid::-webkit-scrollbar-thumb { background: var(--cyan); border-radius: 10px; }
+
+/* FOOTER */
+.main-footer { background: var(--bg-dark); border-top: 1px solid var(--card-border); padding: 50px 5% 30px; margin-top: 20px; }
+.footer-grid { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 30px; margin-bottom: 40px; }
+.footer-logo { height: 40px; margin-bottom: 15px; }
+.footer-desc { font-size: 0.9rem; color: var(--abu); line-height: 1.6; max-width: 300px; }
+.footer-col h4 { font-size: 1.1rem; margin-bottom: 15px; color: var(--putih); }
+.footer-col a { display: block; color: var(--abu); text-decoration: none; font-size: 0.9rem; margin-bottom: 10px; transition: 0.2s ease-out; }
+.footer-col a i { margin-right: 5px; font-size: 1.1rem; }
+.footer-col a:hover { color: var(--cyan); transform: translateX(3px); }
+.footer-bottom { text-align: center; padding-top: 20px; border-top: 1px solid var(--card-border); font-size: 0.85rem; color: var(--abu); }
+
+/* ANIMASI SCROLL REVEAL */
+.reveal { opacity: 0; transform: translateY(20px) translate3d(0,0,0); transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94); will-change: transform, opacity; }
+.reveal.active { opacity: 1; transform: translateY(0) translate3d(0,0,0); }
+
+/* TRUE RESPONSIVE MEDIA QUERIES */
+@media (max-width: 992px) {
+    .dashboard-layout { grid-template-columns: 1fr; }
+    .hero-title { font-size: 2.8rem; }
+    .footer-grid { grid-template-columns: 1fr 1fr; gap: 25px; }
+    .testi-modal-grid { grid-template-columns: repeat(3, 1fr); }
+    .vip-banner-box { flex-direction: column; text-align: center; justify-content: center; }
+    .vip-content-left { flex-direction: column; text-align: center; }
+    .vip-buttons-right { width: 100%; flex-direction: column; }
+}
+
+@media (max-width: 768px) {
+    .dashboard-layout { padding-top: 80px; }
+    .hero-title { font-size: 2.2rem; }
+    .bento-grid-2 { grid-template-columns: 1fr; }
+    .grid-container { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+    .testi-grid-preview { grid-template-columns: repeat(4, 1fr); }
+    .testi-modal-grid { grid-template-columns: repeat(2, 1fr); } 
+    .katalog-modal-grid { grid-template-columns: repeat(1, 1fr); }
 }
