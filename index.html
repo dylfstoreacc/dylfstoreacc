@@ -11,10 +11,8 @@
 </head>
 <body>
 
-    <!-- Mesin Penerjemah (Diubah posisinya agar tidak error oleh Google) -->
-    <div id="google_translate_element" style="position: absolute; top: -9999px; left: -9999px; opacity: 0; pointer-events: none;"></div>
+    <div id="google_translate_element" style="display:none;"></div>
 
-    <!-- PRELOADER ANIMASI -->
     <div id="preloader">
         <div class="welcome-text" id="welcomeText"></div>
     </div>
@@ -48,7 +46,7 @@
             <a href="#katalog" class="sidebar-link"><i class="fa-solid fa-layer-group"></i> Layanan Kami</a>
             <a href="#testimoni" class="sidebar-link"><i class="fa-solid fa-star"></i> Testimoni</a>
             <a href="#" class="sidebar-link" onclick="openModal('aboutStoreModal'); return false;"><i class="fa-solid fa-circle-info"></i> About Store</a>
-            <a href="https://wa.me/6285266953530" target="_blank" class="sidebar-link btn-wa-sidebar"><i class="fa-brands fa-whatsapp"></i> Chat Admin</a>
+            <a href="https://wa.me/6285266953530" target="_blank" class="sidebar-link" style="background: rgba(37, 211, 102, 0.1); color: #25D366; border: 1px solid rgba(37, 211, 102, 0.3);"><i class="fa-brands fa-whatsapp"></i> Chat Admin</a>
         </div>
     </div>
 
@@ -75,29 +73,22 @@
         <i class="fa-brands fa-whatsapp"></i>
     </a>
 
-    <!-- MODAL ABOUT STORE (DIKEMBALIKAN UTUH & DETAIL) -->
+    <!-- MODAL ABOUT STORE -->
     <div id="aboutStoreModal" class="modal-overlay">
-        <div class="modal-content glass-card about-modal-box" style="max-width: 650px;">
+        <div class="modal-content glass-card">
             <span class="close-btn" onclick="closeModal('aboutStoreModal')">&times;</span>
-            <h2 class="section-title" style="font-size: 2rem; margin-bottom: 10px;">About <br><span class="text-gradient-navy">DYLF STOREacc</span></h2>
-            
-            <p class="text-muted" style="margin-bottom: 15px; font-size: 0.95rem; line-height: 1.6; text-align: left;">
-                Website <strong>DYLF STOREacc</strong> adalah sebuah platform layanan transaksi digital terpadu yang dirancang khusus untuk memfasilitasi berbagai kebutuhan gamers dan pengguna internet dengan mengedepankan keamanan serta transparansi penuh.
-            </p>
-            
-            <div class="about-list-box" style="margin-bottom: 15px; text-align: left; padding: 15px;">
-                <p style="margin-bottom: 10px; font-weight: 600; color: var(--putih);"><i class="fa-solid fa-list-check text-cyan"></i> Platform ini menawarkan empat layanan utama:</p>
-                <ul style="color: var(--abu); font-size: 0.9rem; padding-left: 20px; line-height: 1.6;">
-                    <li style="margin-bottom: 8px;"><strong style="color: var(--putih);">Jual Beli Akun Digital:</strong> Wadah penyediaan dan transaksi aman untuk berbagai akun game maupun media sosial.</li>
-                    <li style="margin-bottom: 8px;"><strong style="color: var(--putih);">Jasa Rekber & Middleman (MC):</strong> Layanan perantara pihak ketiga untuk mengamankan dana pembeli dan mencegah segala bentuk penipuan (scam) selama proses jual beli.</li>
-                    <li style="margin-bottom: 8px;"><strong style="color: var(--putih);">Jasa Topup Item:</strong> Pengisian kebutuhan mata uang in-game, seperti Diamond pada game MLBB.</li>
-                    <li><strong style="color: var(--putih);">Jasa Convert Saldo:</strong> Layanan penukaran atau pencairan saldo dengan rate bersahabat dari pulsa, e-wallet, bank, hingga valuta asing.</li>
+            <h2 class="section-title" style="font-size: 2rem;">About <br><span class="text-gradient-navy">DYLF STOREacc</span></h2>
+            <p class="text-muted" style="margin-bottom: 15px; font-size: 0.95rem; line-height: 1.6;">DYLF STOREacc bukan sekadar platform transaksi, melainkan wadah interaksi terpercaya bagi para gamers dan pengguna digital.</p>
+            <div class="about-list-box">
+                <p style="margin-bottom: 5px; font-weight: 600;"><i class="fa-solid fa-list-check text-cyan"></i> Layanan Ekosistem Kami:</p>
+                <ul>
+                    <li>Jual Beli Akun Digital (Game, Sosmed, dll)</li>
+                    <li>Jasa Keamanan Transaksi (Rekber / MC)</li>
+                    <li>Jasa Topup Item MLBB (Diamond, Charisma)</li>
+                    <li>Jasa Convert Saldo (E-Wallet, Pulsa, Valas)</li>
                 </ul>
             </div>
-            
-            <p class="text-muted" style="font-size: 0.9rem; line-height: 1.6; text-align: left; padding-bottom: 10px;">
-                Untuk memastikan 100% keamanan dan kelancaran, seluruh proses transaksi di ekosistem ini tidak dilepas begitu saja, melainkan diproses secara real-time dan ditangani langsung oleh admin penanggung jawabnya <strong>(Dileppp)</strong>. Melalui website ini, pengunjung dapat mengecek katalog layanan, memvalidasi ribuan bukti testimoni, serta langsung terhubung ke WhatsApp admin untuk melakukan transaksi dengan nyaman dan tepercaya.
-            </p>
+            <p class="text-muted" style="font-size: 0.85rem; line-height: 1.5;">Kami memastikan setiap proses jual-beli berjalan transparan, cepat, dan 100% aman di bawah pengawasan langsung dari admin Dileppp.</p>
         </div>
     </div>
 
@@ -163,7 +154,7 @@
         </div>
     </div>
 
-    <!-- MODAL TESTIMONI (FULL SCROLL) -->
+    <!-- MODAL TESTIMONI POP-UP -->
     <div id="modalTestiStok" class="modal-overlay">
         <div class="modal-content glass-card modal-large">
             <span class="close-btn" onclick="closeModal('modalTestiStok')">&times;</span>
@@ -289,7 +280,7 @@
         </div>
     </section>
 
-    <!-- TESTIMONI -->
+    <!-- TESTIMONI KELOMPOK -->
     <section id="testimoni" class="compact-section reveal">
         <div class="section-header-left">
             <h2 class="section-title"><i class="fa-solid fa-star text-cyan"></i> Pusat <span class="text-gradient-navy">Testimoni</span></h2>
